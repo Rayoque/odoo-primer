@@ -33,6 +33,9 @@
         <span class="stamp forest">Official images</span>
         <span class="stamp plum">Named volumes</span>
       </div>
+      <p class="start-row">
+        <a class="btn-start" href="#up">Start here → Bring it up</a>
+      </p>
 
       <h2 id="why">Why this stack</h2>
       <p>The <a href="https://hub.docker.com/_/odoo">official Odoo Docker documentation</a> is explicit: the image needs a PostgreSQL server; extra addons mount at <code>/mnt/extra-addons</code>; filestore belongs in a named volume at <code>/var/lib/odoo</code>. That is the whole architecture.</p>
@@ -64,6 +67,18 @@ docker compose up -d
 docker compose logs -f web
 </code></pre>
       <p>When the log shows the HTTP server, open <a href="http://localhost:8069">http://localhost:8069</a>. You should see the database manager, not a Python traceback.</p>
+      <details class="how">
+        <summary>How?</summary>
+        <div class="how-body">
+          <ol>
+            <li>Open a terminal in this repo. Run <code>cd setup</code> then <code>docker compose up -d</code>. First run downloads images — that can take several minutes.</li>
+            <li>Optional check: <code>docker compose ps</code>. <strong>Done looks like:</strong> <code>primer-odoo</code> and <code>primer-db</code> both <code>Up</code>; web ports include <code>8069</code>.</li>
+            <li><code>docker compose logs -f web</code> until you see a werkzeug / HTTP line, then Ctrl+C to stop following (containers keep running).</li>
+            <li>Open <a href="http://localhost:8069">http://localhost:8069</a>.</li>
+          </ol>
+          <p><strong>Done looks like:</strong> the database manager form. If the tab stays blank, wait and re-check logs. Port already allocated → stop the other process or map <code>8070:8069</code>.</p>
+        </div>
+      </details>
       <p>Compose highlights (mirrors the official example: web + db, extra addons, config directory, named volumes):</p>
 <pre><code>services:
   web:
@@ -85,6 +100,13 @@ docker compose logs -f web
       POSTGRES_PASSWORD: odoo
 </code></pre>
       <p>Master password is <code>admin_passwd</code> in <code>setup/config/odoo.conf</code>, default <code>primer-master-change-me</code>. That password is for <em>creating and deleting databases</em>, not for logging in as a user.</p>
+      <details class="how">
+        <summary>How?</summary>
+        <div class="how-body">
+          <p>Open <code>setup/config/odoo.conf</code> and find <code>admin_passwd</code>. Type that exact string into the <strong>Master Password</strong> field on the database manager — not into the Email/Password login fields after a database exists.</p>
+          <p><strong>Done looks like:</strong> Create / Backup / Duplicate / Drop work. If those buttons reject the password, you are using the admin <em>user</em> password by mistake.</p>
+        </div>
+      </details>
 
       <h2 id="db">Create databases the primer way</h2>
       <ol class="lab">
@@ -94,6 +116,19 @@ docker compose logs -f web
         <li>Language: English. Country: United States (Harborline labs) unless you are practicing a specific localization.</li>
         <li>Demo data: <strong>checked</strong> for learn, <strong>unchecked</strong> for <code>primer_portfolio</code>.</li>
       </ol>
+      <details class="how">
+        <summary>How?</summary>
+        <div class="how-body">
+          <ol>
+            <li>Stay on <a href="http://localhost:8069">http://localhost:8069</a> (or <code>/web/database/manager</code>).</li>
+            <li>Fill <strong>Master Password</strong> from <code>odoo.conf</code>, <strong>Database Name</strong> <code>primer_learn</code>, then Email + Password (your login).</li>
+            <li>Language English, Country United States for Harborline labs.</li>
+            <li>Demo data checkbox: <strong>on</strong> for <code>primer_learn</code>. Later, a second database <code>primer_portfolio</code> with demo data <strong>off</strong>.</li>
+            <li>Click <strong>Create database</strong> and wait.</li>
+          </ol>
+          <p><strong>Done looks like:</strong> you are logged in to the home / app switcher, not still on the manager form.</p>
+        </div>
+      </details>
       <div class="callout warn">
         <h3>Filestore and database are a pair</h3>
         <p>Attachments and product images live in <code>/var/lib/odoo/filestore/&lt;dbname&gt;</code>. A SQL dump without the filestore is a half backup. A volume wipe (<code>docker compose down -v</code>) deletes both.</p>

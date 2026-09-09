@@ -18,10 +18,10 @@
     <aside class="toc">
       <h2>On this page</h2>
       <a href="#meta">Session</a>
-      <a href="#why">Why Upwork cares</a>
-      <a href="#concepts">Concepts</a>
+      <a href="#start">Start here</a>
       <a href="#lab">Lab</a>
       <a href="#ui">UI map</a>
+      <a href="#concepts">Background</a>
       <a href="#recall">Recall</a>
       <a href="#done">Done when</a>
       <a href="#show">What to show</a>
@@ -36,27 +36,12 @@
         <span class="stamp plum">Produces: running lab + UI map</span>
       </div>
 
-      <h2 id="why">Why this shows up on Upwork</h2>
-      <p>Open jobs titled along the lines of “setup ERP, modules, API, data import” and “Odoo ERP Specialist” start with <em>setup Odoo (cloud or on-premise)</em>, user access, and then CRM / Sales / Inventory / Accounting. Nobody pays for “I installed Docker” as a standalone gig. They do bounce implementers who cannot create a database, turn on developer mode, or explain Community vs Enterprise without hand-waving.</p>
-      <p>Your goal is competence you can narrate: “I stand up Community on Docker with PostgreSQL, extra-addons, named volumes; for Enterprise clients I work in their Odoo.sh.”</p>
-
-      <h2 id="concepts">Concepts to retrieve later</h2>
-      <h3>Four products people confuse</h3>
-      <table>
-        <thead><tr><th>Name</th><th>What it is</th><th>Money</th></tr></thead>
-        <tbody>
-          <tr><td>Odoo Community</td><td>LGPL server + apps. Official Docker image is this.</td><td>Software: $0. Hosting: your machine or VPS.</td></tr>
-          <tr><td>Odoo Enterprise</td><td>Same core plus paid apps (Studio, fuller Accounting, etc.)</td><td>Per-user subscription to Odoo S.A.</td></tr>
-          <tr><td>Odoo Online</td><td>SaaS at odoo.com. Fast click-demo. Weak for extra-addons.</td><td>Trial then paid.</td></tr>
-          <tr><td>Odoo.sh</td><td>Git hosting + staging. Enterprise-only.</td><td>Bundled with Enterprise hosting.</td></tr>
-        </tbody>
-      </table>
-      <h3>Process vs data</h3>
-      <p>Odoo is a Python process. PostgreSQL holds records. The <strong>filestore</strong> holds attachments. Lose one of the three and you have a mystery. Compose in this repo keeps DB and filestore in Docker named volumes so <code>docker compose down</code> (without <code>-v</code>) does not wipe the lab.</p>
-      <h3>Master password vs admin user</h3>
-      <p>The master password (<code>admin_passwd</code>) gates <code>/web/database/manager</code>: create, duplicate, drop, backup. The admin user is a <code>res.users</code> row inside a database. Mixing them up is a classic first-week failure.</p>
-      <h3>Apps vs modules</h3>
-      <p>An <strong>app</strong> is a module with a store icon (<code>application: True</code>). Technical modules hide until developer mode. “Install CRM” is Apps. “Upgrade my custom module” is also Apps, after <strong>Update Apps List</strong>.</p>
+      <div class="start-banner" id="start">
+        <p class="start-row">
+          <a class="btn-start" href="#lab">Start here → Lab</a>
+        </p>
+        <p>Do this sitting: Lab steps 1→5 below. Open a <strong>How?</strong> only if a step stalls you.</p>
+      </div>
 
       <h2 id="lab">Lab</h2>
       <h3>1. Start the stack (8 min)</h3>
@@ -65,7 +50,23 @@ docker compose up -d
 docker compose ps
 docker compose logs --tail=80 web</code></pre>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m1-docker"> <code>primer-odoo</code> and <code>primer-db</code> are up. Browser loads <a href="http://localhost:8069">http://localhost:8069</a>.</li>
+        <li>
+          <input type="checkbox" data-task="m1-docker">
+          <div class="check-body">
+            <span><code>primer-odoo</code> and <code>primer-db</code> are up. Browser loads <a href="http://localhost:8069">http://localhost:8069</a>.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>In a terminal, from this repo: <code>cd setup</code> then <code>docker compose up -d</code>.</li>
+                  <li>Run <code>docker compose ps</code>. <strong>Done looks like:</strong> both <code>primer-odoo</code> and <code>primer-db</code> show <code>Up</code> (or <code>Up (healthy)</code>). <code>primer-odoo</code> PORTS include <code>0.0.0.0:8069-&gt;8069/tcp</code>.</li>
+                  <li>Open <a href="http://localhost:8069">http://localhost:8069</a>. <strong>Done looks like:</strong> the Odoo database manager (a create-database form), not a blank tab and not a Python traceback.</li>
+                </ol>
+                <p>If the page will not load: wait 20–40 seconds on first start, then <code>docker compose logs --tail=80 web</code> and look for a werkzeug / HTTP line. If the log says the port is already allocated, stop the other process or change the compose mapping to <code>8070:8069</code> and use <a href="http://localhost:8070">http://localhost:8070</a>.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
       <p>If 8069 is busy, change the compose port mapping to <code>8070:8069</code> and use that URL. Do not run two Odoo containers on the same port and hope.</p>
 
@@ -78,14 +79,49 @@ docker compose logs --tail=80 web</code></pre>
         <li>Demo data: <strong>on</strong>.</li>
         <li>Wait. First database creation downloads nothing extra but it compiles assets and loads localization. That can take a few minutes.</li>
       </ol>
+      <details class="how">
+        <summary>How?</summary>
+        <div class="how-body">
+          <ol>
+            <li>You should already be on <a href="http://localhost:8069">http://localhost:8069</a> — that <em>is</em> the database manager when no database exists. Bookmark <code>http://localhost:8069/web/database/manager</code> for later.</li>
+            <li><strong>Master Password</strong> (top field): type <code>primer-master-change-me</code> unless you edited <code>setup/config/odoo.conf</code> (<code>admin_passwd</code>). This is <em>not</em> your future login password.</li>
+            <li><strong>Database Name:</strong> <code>primer_learn</code>.</li>
+            <li><strong>Email</strong> = the login you will type later. <strong>Password</strong> = pick one and store it in a password manager, not in git.</li>
+            <li>Language: English. Country: United States (Harborline labs).</li>
+            <li><strong>Demo data:</strong> tick the checkbox so it is on.</li>
+            <li>Click <strong>Create database</strong>. Wait. Do not refresh in a panic — first create can take a few minutes.</li>
+          </ol>
+          <p><strong>Done looks like:</strong> the Odoo home / app switcher (a grid of app icons) after login — not still sitting on the manager form.</p>
+        </div>
+      </details>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m1-db"> You can log in and see the home / app switcher.</li>
+        <li>
+          <input type="checkbox" data-task="m1-db">
+          <div class="check-body">You can log in and see the home / app switcher.</div>
+        </li>
       </ul>
 
       <h3>3. Install the four apps this primer actually uses (6 min)</h3>
       <p>Apps → search and install <strong>CRM</strong>, <strong>Sales</strong>, <strong>Inventory</strong>, <strong>Invoicing</strong>. Also install <strong>Purchase</strong> if you want receipts from vendor POs in Module 3. Decline the urge to install Website, eLearning, and Dashboards “while you are here.” Extra apps add menus and settings noise.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m1-apps"> CRM, Sales, Inventory, Invoicing show as installed.</li>
+        <li>
+          <input type="checkbox" data-task="m1-apps">
+          <div class="check-body">
+            <span>CRM, Sales, Inventory, Invoicing show as installed.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Click the <strong>app switcher</strong> (the 9-dot grid, top-left).</li>
+                  <li>Click <strong>Apps</strong>.</li>
+                  <li>Use the <strong>search box</strong> at the top of the Apps screen. Search <strong>CRM</strong>, open the card, click <strong>Install</strong>.</li>
+                  <li>Repeat for <strong>Sales</strong>, <strong>Inventory</strong>, <strong>Invoicing</strong>. One install at a time — wait until the previous one finishes.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> each of the four cards no longer shows Install; the app appears in the app switcher grid. If search finds nothing, wait out the current install, then search again.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>4. Developer mode (4 min)</h3>
@@ -97,7 +133,24 @@ docker compose logs --tail=80 web</code></pre>
         <li>Apps → <strong>Update Apps List</strong></li>
       </ul>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m1-dev"> Bug icon visible. Technical menu visible under Settings.</li>
+        <li>
+          <input type="checkbox" data-task="m1-dev">
+          <div class="check-body">
+            <span>Bug icon visible. Technical menu visible under Settings.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>App switcher (9-dot grid, top-left) → <strong>Settings</strong>.</li>
+                  <li>You land on <strong>General Settings</strong>. Scroll all the way to the <strong>bottom</strong> of that page.</li>
+                  <li>Click the text link <strong>Activate the developer mode</strong> (not a big primary button).</li>
+                </ol>
+                <p><strong>Done looks like:</strong> a <span title="Small beetle/bug in the top bar, near the user avatar at top-right">bug icon</span> in the top bar (systray, near the user avatar, top-right). Settings now has a <strong>Technical</strong> menu. Apps gains <strong>Update Apps List</strong>.</p>
+                <p>If it disappears after logout: same path again, or add <code>?debug=1</code> to the URL (example: <code>http://localhost:8069/odoo?debug=1</code>).</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>5. Users, company, language (5 min)</h3>
@@ -121,8 +174,41 @@ docker compose logs --tail=80 web</code></pre>
       </table>
       <p>Database manager URL: <code>http://localhost:8069/web/database/manager</code>. Bookmark it. Practice <strong>Backup</strong> once — download the zip (includes filestore if you tick that option). That zip is not a git artifact; it is your undo.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m1-ui"> Screenshot of app switcher + one form with chatter open, saved as <code>portfolio/setup/01-ui-map.png</code>.</li>
-        <li><input type="checkbox" data-task="m1-backup"> You have produced a backup zip or at least clicked through the backup dialog so you know the password prompt.</li>
+        <li>
+          <input type="checkbox" data-task="m1-ui">
+          <div class="check-body">
+            <span>Screenshot of app switcher + one form with chatter open, saved as <code>portfolio/setup/01-ui-map.png</code>.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Click the <strong>app switcher</strong> (9-dot grid, top-left). Capture the grid of installed apps.</li>
+                  <li>Open any form — easiest: app switcher → <strong>Settings</strong> → <strong>Users &amp; Companies</strong> → <strong>Users</strong> → your user. Chatter is the panel on the <strong>right</strong>; expand it if it is collapsed.</li>
+                  <li>Also click once: <strong>Discuss</strong>, <strong>Settings</strong>, and the <strong>user menu</strong> (top-right avatar).</li>
+                  <li>Save the PNG as <code>portfolio/setup/01-ui-map.png</code> (create the folders if needed).</li>
+                </ol>
+                <p><strong>Done looks like:</strong> that file on disk, not only a screenshot sitting in the clipboard.</p>
+              </div>
+            </details>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" data-task="m1-backup">
+          <div class="check-body">
+            <span>You have produced a backup zip or at least clicked through the backup dialog so you know the password prompt.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Open <code>http://localhost:8069/web/database/manager</code>.</li>
+                  <li>On the <code>primer_learn</code> row, click <strong>Backup</strong>.</li>
+                  <li>Master password: same as create-DB (<code>primer-master-change-me</code> unless you changed it). Leave backup format as zip if offered; tick filestore if you see that option.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> a zip download, or at least the password prompt so you know this screen exists. Do not commit the zip to git.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <div class="callout">
@@ -130,33 +216,59 @@ docker compose logs --tail=80 web</code></pre>
         <p>Same steps, demo data <strong>off</strong>. Install the same four apps. Rename the company to Harborline Wholesale. This is the only database you screenshot for Upwork. Mixing demo customers named “Azure Interior” into a portfolio is how you look like a tutorial tab, not an implementer.</p>
       </div>
 
+      <details class="background" id="concepts">
+        <summary>Background (optional)</summary>
+        <h2 id="why">Why this shows up on Upwork</h2>
+        <p>Open jobs titled along the lines of “setup ERP, modules, API, data import” and “Odoo ERP Specialist” start with <em>setup Odoo (cloud or on-premise)</em>, user access, and then CRM / Sales / Inventory / Accounting. Nobody pays for “I installed Docker” as a standalone gig. They do bounce implementers who cannot create a database, turn on developer mode, or explain Community vs Enterprise without hand-waving.</p>
+        <p>Your goal is competence you can narrate: “I stand up Community on Docker with PostgreSQL, extra-addons, named volumes; for Enterprise clients I work in their Odoo.sh.”</p>
+
+        <h2>Concepts to retrieve later</h2>
+        <h3>Four products people confuse</h3>
+        <table>
+          <thead><tr><th>Name</th><th>What it is</th><th>Money</th></tr></thead>
+          <tbody>
+            <tr><td>Odoo Community</td><td>LGPL server + apps. Official Docker image is this.</td><td>Software: $0. Hosting: your machine or VPS.</td></tr>
+            <tr><td>Odoo Enterprise</td><td>Same core plus paid apps (Studio, fuller Accounting, etc.)</td><td>Per-user subscription to Odoo S.A.</td></tr>
+            <tr><td>Odoo Online</td><td>SaaS at odoo.com. Fast click-demo. Weak for extra-addons.</td><td>Trial then paid.</td></tr>
+            <tr><td>Odoo.sh</td><td>Git hosting + staging. Enterprise-only.</td><td>Bundled with Enterprise hosting.</td></tr>
+          </tbody>
+        </table>
+        <h3>Process vs data</h3>
+        <p>Odoo is a Python process. PostgreSQL holds records. The <strong>filestore</strong> holds attachments. Lose one of the three and you have a mystery. Compose in this repo keeps DB and filestore in Docker named volumes so <code>docker compose down</code> (without <code>-v</code>) does not wipe the lab.</p>
+        <h3>Master password vs admin user</h3>
+        <p>The master password (<code>admin_passwd</code>) gates <code>/web/database/manager</code>: create, duplicate, drop, backup. The admin user is a <code>res.users</code> row inside a database. Mixing them up is a classic first-week failure.</p>
+        <h3>Apps vs modules</h3>
+        <p>An <strong>app</strong> is a module with a store icon (<code>application: True</code>). Technical modules hide until developer mode. “Install CRM” is Apps. “Upgrade my custom module” is also Apps, after <strong>Update Apps List</strong>.</p>
+      </details>
+
       <h2 id="recall">Recall prompts</h2>
-      <p>Close the extra tabs. Answer without looking.</p>
+      <p>Close the extra tabs. Answer from what you just did in the lab — not from later modules.</p>
       <div class="quiz">
-        <p>Where do product images go if you back up SQL only?</p>
+        <p>You can log into Odoo as admin, but you cannot create a new database. What password is missing, and where do you use it?</p>
         <button type="button">Reveal</button>
-        <p class="answer">Filestore under <code>/var/lib/odoo/filestore/&lt;db&gt;</code>. SQL-only restore shows broken attachments.</p>
+        <p class="answer">The <strong>master password</strong> (<code>admin_passwd</code> / <code>primer-master-change-me</code> in this lab). It unlocks <code>/web/database/manager</code>. Your admin login password only opens one database.</p>
       </div>
       <div class="quiz">
-        <p>You can log in as admin but cannot create a new database. What is missing?</p>
+        <p>When you created <code>primer_learn</code>, should demo data be on or off — and why for Module 1?</p>
         <button type="button">Reveal</button>
-        <p class="answer">The master password for <code>/web/database/manager</code>, from <code>admin_passwd</code> — not the admin user’s password.</p>
+        <p class="answer"><strong>On</strong> for <code>primer_learn</code>, so menus and sample records exist while you learn navigation. (Portfolio DBs later often use demo <strong>off</strong>.)</p>
       </div>
       <div class="quiz">
-        <p>A client says “we are on Odoo.sh, Community Edition.” What is wrong?</p>
+        <p>Name the four apps this primer asked you to install in Module 1.</p>
         <button type="button">Reveal</button>
-        <p class="answer">Odoo.sh hosts Enterprise. Community is Docker/VPS/on-prem. Ask which edition they actually run before quoting Studio or sh-only features.</p>
+        <p class="answer">CRM, Sales, Inventory, and Invoicing. (Purchase is optional for later stock receipts.)</p>
       </div>
       <div class="quiz">
-        <p>Why did your custom module not appear after you copied a folder into <code>addons/</code>?</p>
+        <p>How do you turn on developer mode, and what should you see when it worked?</p>
         <button type="button">Reveal</button>
-        <p class="answer">Need the volume mount, a restart so the process sees files, developer mode, then Apps → Update Apps List. Then install.</p>
+        <p class="answer">Settings → scroll to the bottom → <strong>Activate the developer mode</strong> (or add <code>?debug=1</code> to the URL). You should see the bug/beetle icon and Settings → Technical.</p>
       </div>
       <div class="quiz">
-        <p>Name three things the official Docker compose example mounts or volumes.</p>
+        <p>You ran a Backup from the database manager. What are you trying to practice, and should that zip go in git?</p>
         <button type="button">Reveal</button>
-        <p class="answer">Filestore volume on <code>/var/lib/odoo</code>, config dir on <code>/etc/odoo</code>, extra addons on <code>/mnt/extra-addons</code>, plus a Postgres data volume.</p>
+        <p class="answer">Practicing undo: download a zip (include filestore if offered). Do <strong>not</strong> commit the zip to git — it is local recovery, not a repo artifact.</p>
       </div>
+
 
       <div class="done-when" id="done">
         <h2>Done when</h2>

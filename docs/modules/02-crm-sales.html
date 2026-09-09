@@ -34,6 +34,9 @@
         <span class="stamp forest">Prereq: Module 1</span>
         <span class="stamp plum">Produces: one won deal with a SO</span>
       </div>
+      <p class="start-row">
+        <a class="btn-start" href="#lab">Start here → Lab</a>
+      </p>
 
       <h2 id="why">Why this shows up on Upwork</h2>
       <p>Implementation posts list CRM and Sales as core modules next to Inventory and Accounting. Catalog services sell “Sales pipelines: quotations, price lists, discount tiers, delivery order generation.” A wholesale distribution job on Upwork described sales orders that allocate from on-hand and incoming stock — that is Sales talking to Inventory, which you start here and finish in Module 3.</p>
@@ -73,14 +76,48 @@
       <h3>1. Turn on Leads (3 min)</h3>
       <p>CRM → Configuration → Settings → enable Leads → Save. You should see a <strong>Leads</strong> menu. If you skip this, the rest of the lab still works from an opportunity; you will just miss a question clients ask.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m2-leads"> Leads menu exists. You created lead <strong>Northwind — Q4 beans trial</strong> with expected revenue 1,200, partner name Maya Chen, company Northwind Grocers, notes: “wants 20 bags organic black beans, net 30, Oakland dock.”</li>
+        <li>
+          <input type="checkbox" data-task="m2-leads">
+          <div class="check-body">
+            <span>Leads menu exists. You created lead <strong>Northwind — Q4 beans trial</strong> with expected revenue 1,200, partner name Maya Chen, company Northwind Grocers, notes: “wants 20 bags organic black beans, net 30, Oakland dock.”</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>App switcher → <strong>CRM</strong>.</li>
+                  <li>CRM → <strong>Configuration</strong> → <strong>Settings</strong>. Tick <strong>Leads</strong>. Click <strong>Save</strong> (top of the settings page).</li>
+                  <li>Refresh if needed. You should now see a <strong>Leads</strong> menu (next to Pipeline).</li>
+                  <li>Leads → <strong>New</strong>. Title: <code>Northwind — Q4 beans trial</code>. Fill expected revenue, partner, company, and the note. Save.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> a Leads menu, and that lead in the list — not only an opportunity on the pipeline.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>2. Qualify (5 min)</h3>
       <p>Open the lead. Click <strong>Convert to Opportunity</strong>. Create the customer if it does not exist (company Northwind Grocers, person Maya Chen linked to it). Set the sales team. After conversion, find it on <strong>CRM → Pipeline</strong>.</p>
       <p>Drag the card: New → Qualified. Schedule an activity: Call, due tomorrow, “confirm pallet count.” Activities are what managers mean by “make salespeople use the CRM.”</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m2-pipe"> Opportunity on the kanban with an activity. Chatter shows the conversion.</li>
+        <li>
+          <input type="checkbox" data-task="m2-pipe">
+          <div class="check-body">
+            <span>Opportunity on the kanban with an activity. Chatter shows the conversion.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Open the lead. Click <strong>Convert to Opportunity</strong> (header button).</li>
+                  <li>If asked, <strong>create the customer</strong>: company Northwind Grocers, person Maya Chen linked to it. Confirm.</li>
+                  <li>App switcher → CRM → <strong>Pipeline</strong>. Find the card. Drag New → Qualified.</li>
+                  <li>On the card or form: <strong>Schedule activity</strong> → Call, due tomorrow, summary “confirm pallet count.”</li>
+                </ol>
+                <p><strong>Done looks like:</strong> the card on Pipeline (not still under Leads), an activity clock/icon, and a chatter line about conversion.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>3. Quotation from the opportunity (10 min)</h3>

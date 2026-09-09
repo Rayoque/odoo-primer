@@ -34,6 +34,9 @@
         <span class="stamp forest">Prereq: Modules 1–3</span>
         <span class="stamp plum">Produces: posted invoice + payment</span>
       </div>
+      <p class="start-row">
+        <a class="btn-start" href="#lab">Start here → Lab</a>
+      </p>
 
       <h2 id="why">Why this shows up on Upwork</h2>
       <p>Wholesale and “full ERP” jobs name Accounting and Invoicing next to Sales and Inventory. They ask for invoices from sales orders/deliveries, payment status and aging, vendor bills from purchase orders, chart of accounts, taxes. Implementer posts treat Accounting as a module to configure, not as a five-year finance transformation. Your portfolio should show a posted customer invoice, a vendor bill, and a payment — with the journal items visible — not a screenshot of the dashboard gadget.</p>
@@ -91,7 +94,23 @@
       <p>If Module 3 delivered the beans, Create Invoice on the SO should offer a regular invoice for 20 bags. Create and post (Confirm). Open the invoice → Journal Items (developer mode or the journal items tab). You want to see: debit receivable, credit income, tax lines if any.</p>
       <p>If the SO cannot invoice: invoicing policy is delivery and delivery is not done — go finish Module 3, or invoice the service product <code>SVC-ONB</code> as a standalone invoice: Invoicing → Customers → Invoices → New.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m4-invoice"> Posted customer invoice. Journal items screenshot saved.</li>
+        <li>
+          <input type="checkbox" data-task="m4-invoice">
+          <div class="check-body">
+            <span>Posted customer invoice. Journal items screenshot saved.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Open the confirmed sales order. Click <strong>Create Invoice</strong> (header). Create a regular invoice, then <strong>Confirm</strong> (post).</li>
+                  <li>If Create Invoice is disabled or qty to invoice is 0: the product is invoice-on-delivery and the delivery is not validated — finish Module 3, or invoice service <code>SVC-ONB</code> instead: app switcher → <strong>Invoicing</strong> → Customers → Invoices → <strong>New</strong>.</li>
+                  <li>On the posted invoice, open <strong>Journal Items</strong> (a tab, or developer mode). You want debit receivable, credit income, plus tax lines if you set a tax.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> invoice state Posted (not Draft), and a screenshot of those journal items — not only the pretty invoice form.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>4. Vendor bill (8 min)</h3>
@@ -105,7 +124,22 @@
       <p>On the customer invoice: Register Payment. Journal: Bank. Amount: full. Post. Invoice payment state should become Paid (or In Payment, depending on version and whether you still need to reconcile a bank statement). Community without bank rec still lets you register a payment against the invoice.</p>
       <p>Optional: register a partial payment to see residual amount. Aging: Invoicing → Reporting → Partner Ledger or Aged Receivable if present. Screenshot.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m4-pay"> Customer invoice shows paid/in payment. You did not “just change the state” in a hack.</li>
+        <li>
+          <input type="checkbox" data-task="m4-pay">
+          <div class="check-body">
+            <span>Customer invoice shows paid/in payment. You did not “just change the state” in a hack.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>On the posted customer invoice, click <strong>Register Payment</strong>.</li>
+                  <li>Journal: <strong>Bank</strong>. Amount: full. Confirm / <strong>Create Payment</strong>.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> payment state Paid (or In Payment). You did not edit the state field by hand. Community without bank rec still lets you register a payment against the invoice.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <div class="callout danger">
@@ -120,9 +154,9 @@
         <p class="answer"><code>account.move</code> with type out_invoice. Lines are <code>account.move.line</code>.</p>
       </div>
       <div class="quiz">
-        <p>A client on Community asks for Odoo Studio to add a field on the invoice. Your answer?</p>
+        <p>This module used the Community <strong>Invoicing</strong> app. A client asks you to turn on Odoo Studio to add a field on the invoice. What do you tell them?</p>
         <button type="button">Reveal</button>
-        <p class="answer">Studio is Enterprise. On Community you add a small custom module (Module 5) or they buy Enterprise.</p>
+        <p class="answer">Studio is Enterprise-only. Community Invoicing covers invoices, bills, taxes, journals, and payments — not Studio. If they need Studio (or full Enterprise Accounting), that is an edition/pricing conversation, not a hidden Community setting.</p>
       </div>
       <div class="quiz">
         <p>Why configure taxes before the first real invoice?</p>

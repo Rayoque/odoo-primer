@@ -34,6 +34,9 @@
         <span class="stamp forest">Prereq: Modules 1–2, Docker addons mount</span>
         <span class="stamp plum">Produces: installed addon + ACL demo</span>
       </div>
+      <p class="start-row">
+        <a class="btn-start" href="#lab">Start here → Lab</a>
+      </p>
 
       <h2 id="why">Why custom modules beat Website for Module 5</h2>
       <p>Website and eCommerce work exists on Upwork (catalog items like “a high-conversion Odoo website,” freelancer history with “Odoo Website Updates,” “Finish a Odoo Ecommerce”). Implementation posts, though, repeatedly ask for <em>customization</em>, <em>custom modules</em>, <em>custom documents</em>, and Python. Project catalog cards repeat “customization, module development, report writing.” The wholesale job wanted custom documents on top of Sales/Inventory/Accounting.</p>
@@ -94,7 +97,24 @@ docker compose -f setup/docker-compose.yml restart web
       </ol>
       <p>Create an instruction on the Northwind SO: handling Fragile, text “Do not double-stack pallets. Call Maya 30 min out.” Confirm the record with the header button.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m5-view"> Primer menu lists the record. SO smart button count is 1.</li>
+        <li>
+          <input type="checkbox" data-task="m5-view">
+          <div class="check-body">
+            <span>Primer menu lists the record. SO smart button count is 1.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Developer mode on (Module 1: Settings → bottom → Activate the developer mode).</li>
+                  <li>App switcher → <strong>Apps</strong>. Remove the default <strong>Apps</strong> filter if it is on — this module is <code>application: False</code>, so the filter hides it.</li>
+                  <li>Click <strong>Update Apps List</strong> → Update. Search <strong>Primer Delivery</strong> (or technical name <code>primer_delivery_instruction</code>). <strong>Install</strong>.</li>
+                  <li>Refresh. App switcher should show <strong>Primer</strong>. Open the Northwind SO: <strong>Instructions</strong> smart button + a notebook page.</li>
+                </ol>
+                <p><strong>Done looks like:</strong> module installed without a traceback, Primer menu lists the instruction, SO button count is 1.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>4. Security lab (12 min)</h3>
@@ -107,7 +127,23 @@ access_primer_di_manager,...,model_primer_delivery_instruction,group_primer_mana
 </code></pre>
       <p><code>model_primer_delivery_instruction</code> is automatic: <code>model_</code> + name with dots to underscores. Group xml ids live in the same module unless prefixed with <code>other_module.xmlid</code>.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m5-acl"> You reproduced Access Error or missing Delete as the User, and Delete as Manager (or admin).</li>
+        <li>
+          <input type="checkbox" data-task="m5-acl">
+          <div class="check-body">
+            <span>You reproduced Access Error or missing Delete as the User, and Delete as Manager (or admin).</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>App switcher → Settings → <strong>Users &amp; Companies</strong> → <strong>Users</strong>. Open or create <code>sales.lab</code>.</li>
+                  <li>Access Rights: Sales / User plus <strong>Primer Delivery / User</strong> — not Manager. Save.</li>
+                  <li>Log in as that user (incognito or another browser). Open an instruction. Edit text. Try <strong>Action → Delete</strong> (or the delete icon).</li>
+                </ol>
+                <p><strong>Done looks like:</strong> User cannot unlink (button missing or Access Error). Log back in as admin/Manager: Delete works. That is the Loom: “here is the group, here is the CSV.”</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>5. Change, upgrade (8 min)</h3>

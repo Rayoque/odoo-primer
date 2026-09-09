@@ -184,6 +184,27 @@
     }
   }
 
+  function bindHow() {
+    document.querySelectorAll("[data-how]").forEach((el) => {
+      if (el.querySelector(":scope > details.how, :scope > .check-body > details.how")) return;
+      const text = el.getAttribute("data-how");
+      if (!text) return;
+      const details = document.createElement("details");
+      details.className = "how";
+      const summary = document.createElement("summary");
+      summary.textContent = "How?";
+      const body = document.createElement("div");
+      body.className = "how-body";
+      body.textContent = text;
+      details.append(summary, body);
+      const host = el.querySelector(":scope > .check-body") || el;
+      host.appendChild(details);
+    });
+    document.querySelectorAll(".checklist li").forEach((li) => {
+      if (li.querySelector("details.how")) li.classList.add("has-how");
+    });
+  }
+
   function bindQuizzes() {
     document.querySelectorAll(".quiz button").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -208,6 +229,7 @@
     const foot = document.getElementById("site-footer");
     if (foot) foot.innerHTML = footer();
     bindChecklists();
+    bindHow();
     bindQuizzes();
     renderProgressWidgets();
   });

@@ -33,6 +33,9 @@
         <span class="stamp forest">Prereq: Modules 1–2</span>
         <span class="stamp plum">Produces: on-hand qty + a move</span>
       </div>
+      <p class="start-row">
+        <a class="btn-start" href="#lab">Start here → Lab</a>
+      </p>
 
       <h2 id="why">Why this shows up on Upwork</h2>
       <p>A public wholesale distribution implementation post asked for Sales, Inventory, Purchase, Accounting, and a workflow that allocates sales orders from <em>on-hand</em> and <em>incoming linked to purchase orders</em>, including partial allocation. Catalog listings sell POS + Inventory + Sales with warehouses, lots, barcodes, and reordering rules. “Inventory / Stock” is named in ERP specialist posts next to CRM and Accounting.</p>
@@ -85,14 +88,46 @@
       <p><strong>B. Purchase receipt</strong> (preferred story): Purchase → New PO to your vendor, 100 bags beans. Confirm. Receive products. Validate the receipt. Qty on hand becomes 100. Incoming shipments menu shows the history.</p>
       <p>Open the product → On Hand smart button. You should see a quant: WH/Stock, 100. Then Inventory → Reporting → Moves (or Product Moves). Filter product beans. Read source location, destination, quantity, reference (the picking name).</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m3-receipt"> On-hand is 100 (or whatever you received). You opened the stock move, not only the product form.</li>
+        <li>
+          <input type="checkbox" data-task="m3-receipt">
+          <div class="check-body">
+            <span>On-hand is 100 (or whatever you received). You opened the stock move, not only the product form.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <p>Pick one path:</p>
+                <p><strong>A. Adjustment (fast):</strong> App switcher → <strong>Inventory</strong> → <strong>Operations</strong> → <strong>Physical Inventory</strong> (or Adjustments). New count for beans, location <code>WH/Stock</code>, counted qty 100. <strong>Validate</strong>.</p>
+                <p><strong>B. Purchase receipt (better story):</strong> App switcher → <strong>Purchase</strong> → New PO to your vendor, 100 bags beans → <strong>Confirm</strong> → <strong>Receive products</strong> → <strong>Validate</strong>.</p>
+                <p>Then open the product → <strong>On Hand</strong> smart button. You want a quant: WH/Stock, 100. Inventory → Reporting → <strong>Moves</strong> (or Product Moves) → filter beans.</p>
+                <p><strong>Done looks like:</strong> on-hand 100, and a move with source, destination, qty, and a picking name — not only a number on the product form.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>4. Deliver the sales order (10 min)</h3>
       <p>Re-open the Northwind sales order from Module 2, or make a new quotation for 20 bags and confirm. Delivery smart button → Open the picking. Reserved quantity should be 20 if stock exists. Validate. On-hand should drop to 80.</p>
       <p>If nothing is reserved: check the product is storable, the warehouse on the SO matches, and you actually have quants. Forecasted quantity includes incoming; on-hand does not. Salespeople staring at “forecasted” and promising same-day delivery is a training issue you will get paid to fix.</p>
       <ul class="checklist">
-        <li><input type="checkbox" data-task="m3-delivery"> Delivery validated. Product moves show WH/Stock → Customers. SO delivered qty is 20.</li>
+        <li>
+          <input type="checkbox" data-task="m3-delivery">
+          <div class="check-body">
+            <span>Delivery validated. Product moves show WH/Stock → Customers. SO delivered qty is 20.</span>
+            <details class="how">
+              <summary>How?</summary>
+              <div class="how-body">
+                <ol>
+                  <li>Open the Northwind sales order (Sales → Orders, or the CRM opportunity → quotation smart button).</li>
+                  <li>Click the <strong>Delivery</strong> smart button. Open the picking.</li>
+                  <li>Reserved qty should be 20 if stock exists. Click <strong>Validate</strong> (and Apply if it asks to set quantities).</li>
+                </ol>
+                <p>If nothing is reserved: product must be storable, warehouse on the SO must match, and on-hand must be &gt; 0. Forecasted includes incoming; on-hand does not.</p>
+                <p><strong>Done looks like:</strong> picking state Done, on-hand dropped (100 → 80), moves WH/Stock → Customers, SO delivered qty 20.</p>
+              </div>
+            </details>
+          </div>
+        </li>
       </ul>
 
       <h3>5. Reordering rule (7 min)</h3>
@@ -114,9 +149,9 @@
         <p class="answer">Incoming receipts/POs (and/or manufacturing). Could also subtract outgoing confirmed SO. Read the forecast report rather than guessing.</p>
       </div>
       <div class="quiz">
-        <p>You validated a receipt but WH/Stock is still 0. Where is the qty?</p>
+        <p>You confirmed a sales order for 20 bags after receiving 100. On-hand was 100. After you validate the delivery, what should on-hand be, and does “forecasted” mean the same thing?</p>
         <button type="button">Reveal</button>
-        <p class="answer">Two-step receipt: goods sit in WH/Input (or Quality) until the internal transfer to Stock is done.</p>
+        <p class="answer">On-hand should be 80. Forecasted is not the same as on-hand — it also counts incoming (and can reserve outgoing). In this lab you read on-hand on the product and validated a one-step delivery WH/Stock → Customer.</p>
       </div>
       <div class="quiz">
         <p>Why did a service product not create a delivery on the SO?</p>

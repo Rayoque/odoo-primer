@@ -73,7 +73,7 @@ Lots/serials: food distributors often need them. Enable tracking and you cannot 
 ## Recall
 
 1. Forecasted 50, on-hand 10 — the 40 may be incoming POs (and/or outgoing SO). Read the forecast report.
-2. Receipt validated, WH/Stock still 0 — two-step: goods in WH/Input.
+2. After receiving 100 and delivering 20 on a confirmed SO, on-hand should be 80. Forecasted ≠ on-hand (forecasted also counts incoming).
 3. Service created no delivery — services are not storable.
 4. Document vs atomic object — picking vs stock move; quants are balances.
 

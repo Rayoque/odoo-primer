@@ -73,7 +73,7 @@ Register Payment on the customer invoice, Bank, full amount. State Paid or In Pa
 ## Recall
 
 1. Posted invoice model: `account.move` type out_invoice; lines `account.move.line`.
-2. Studio on Community: no. Custom module or they buy Enterprise.
+2. Studio is Enterprise-only. Community Invoicing does invoices/bills/taxes/payments — not Studio; that is an edition conversation.
 3. Taxes before the first real invoice: posted invoices freeze tax lines.
 4. Wholesale goods: invoice on delivery so you do not bill what you could not ship. Services: ordered quantities.
 5. Default income account: product category.
