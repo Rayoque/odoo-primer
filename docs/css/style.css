@@ -604,3 +604,34 @@ ol.lab > li { margin: 0.55rem 0; }
   .wrap { display: block; padding: 0; }
   a { color: inherit; text-decoration: none; }
 }
+
+/* Module/exercise cards marked complete from local progress */
+.card.is-complete {
+  position: relative;
+  box-shadow: inset 0 0 0 2px var(--forest, #2f5d50);
+}
+.card.is-complete .num {
+  color: var(--forest, #2f5d50);
+}
+.done-badge {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: var(--forest, #2f5d50);
+  color: #f6f1e7;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.done-badge::before {
+  content: "✓ ";
+}
+.card.is-complete h3 a::after {
+  content: " ✓";
+  color: var(--forest, #2f5d50);
+  font-weight: 600;
+}

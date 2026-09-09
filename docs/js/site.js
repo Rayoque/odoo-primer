@@ -99,6 +99,28 @@
     ];
   }
 
+
+  function modulePrefix(key) {
+    // m1 -> m1-, ex1 -> ex1-
+    return key + "-";
+  }
+
+  function markModuleCards(state, catalog) {
+    document.querySelectorAll("[data-module]").forEach((card) => {
+      const key = card.getAttribute("data-module");
+      if (!key) return;
+      const prefix = modulePrefix(key);
+      const ids = catalog.filter((id) => id.startsWith(prefix));
+      const complete = ids.length > 0 && ids.every((id) => state[id]);
+      card.classList.toggle("is-complete", complete);
+      const badge = card.querySelector(".done-badge");
+      if (badge) {
+        if (complete) badge.removeAttribute("hidden");
+        else badge.setAttribute("hidden", "");
+      }
+    });
+  }
+
   function renderProgressWidgets() {
     const state = loadState();
     const catalog = knownCatalog();
@@ -182,6 +204,7 @@
         ? labels[upcoming] || upcoming
         : "All tracked items are checked. Run a spaced review or pack a new artifact.";
     }
+    markModuleCards(state, catalog);
   }
 
   function bindHow() {
