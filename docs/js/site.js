@@ -40,7 +40,7 @@
       <div class="footer-inner">
         <div>
           <strong>Odoo Primer</strong> — Odoo 18 Community modules and Upwork-aligned exercises.<br>
-          GitHub user <a href="https://github.com/Rayoque">Rayoque</a> · MIT License
+          Created by <a href="https://github.com/Rayoque">Rayoque</a> · MIT License · <a href="https://github.com/Rayoque/odoo-primer">Source</a>
         </div>
         <div>
           <a href="${p}progress.html">Progress tracker</a> ·
