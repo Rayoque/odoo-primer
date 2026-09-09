@@ -2,9 +2,7 @@
 
 Short Odoo 18 Community modules plus Upwork-aligned exercises that produce portfolio artifacts (screenshots, Loom scripts, a custom module folder, before/after imports).
 
-GitHub owner: **[Rayoque](https://github.com/Rayoque)**. Suggested repo name: `odoo-primer`. MIT licensed. No paid services required.
-
-**Live site (after Pages is on):** https://rayoque.github.io/odoo-primer/
+MIT licensed.
 
 ## Start today’s session in under 5 minutes
 
