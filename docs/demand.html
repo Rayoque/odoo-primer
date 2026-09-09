@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upwork demand notes — Odoo Primer</title>
+  <meta name="description" content="Qualitative research notes on what Odoo gigs sell on Upwork, with citations and no invented statistics.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-depth="0" data-page="demand">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#method">Method</a>
+      <a href="#themes">Themes</a>
+      <a href="#module5">Why Module 5</a>
+      <a href="#sources">Sources</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Research snapshot · 2026-09-01</p>
+      <h1>What Odoo gigs actually sell</h1>
+      <p class="lede">Qualitative read of public Upwork job posts, project catalog cards, the Odoo hire page, and freelancer work-history titles. No invented job counts, rates, or “80% of gigs.”</p>
+
+      <h2 id="method">Method</h2>
+      <p>I opened public pages (job applications, catalog services, hire/odoo-freelancers, browse/odoo-development) and listed the modules and deliverables the buyers wrote down. This is a snapshot, not a market study. Re-run the search before you rewrite your profile headline.</p>
+
+      <h2 id="themes">Themes that showed up</h2>
+      <h3>1. Full-module implementation</h3>
+      <p>Buyers name a cluster: CRM, Sales, Inventory/Stock, Accounting/Invoicing, Purchase, sometimes HR, Projects, POS, Manufacturing. They want configuration, users, and training, not a theoretical ERP essay. Wholesale distribution posts add allocation from on-hand and incoming stock, invoices from deliveries, vendor bills, chart of accounts, custom documents.</p>
+      <h3>2. Customization and custom modules</h3>
+      <p>Catalog titles repeat customization, module development, and report writing. Job text includes “basic customization &amp; automation,” “develop or modify custom modules,” Studio (Enterprise). This is why Module 5 is a module, not a website theme.</p>
+      <h3>3. Data import and integrations</h3>
+      <p>“Data import (clients, products),” API, Shopify/payment/shipping listed on profiles and in scope. The primer gives you a CSV exercise. API/Shopify is a later track — do not put it on the profile until you have a lab for it.</p>
+      <h3>4. POS + Inventory + Sales (retail)</h3>
+      <p>A catalog service is literally “Odoo POS, Inventory, and Sales Module Implementation” (warehouses, lots, barcodes, quotations, delivery orders). POS is not in the first five modules; Inventory + Sales still transfers.</p>
+      <h3>5. Website / eCommerce</h3>
+      <p>Present: catalog “high-conversion Odoo website,” work-history lines like “Odoo Website Updates” and “Finish a Odoo Ecommerce.” Real, but in the open implementation posts sampled it was not the center of gravity. Treat it as track B.</p>
+      <h3>6. Migrations, upgrades, reporting</h3>
+      <p>Profiles sell version upgrades, Community/Enterprise, custom reports (PDF/XLS). Not built as a full module here. After Module 5 you can add a QWeb report as a sixth sitting if a job mentions documents.</p>
+
+      <h2 id="module5">Decision: Module 5 = custom modules</h2>
+      <p>Higher overlap with (1)(2)(6) and a git-shaped portfolio artifact. Website remains an optional later lab using the same products from Harborline.</p>
+
+      <h2 id="sources">Sources (public URLs)</h2>
+      <ul class="cite">
+        <li><a href="https://www.upwork.com/freelance-jobs/apply/Odoo-Implementation-for-Wholesale-Distribution-Inventory-Accounting-Custom-Documents_~022040578819808709769/">Upwork job — Wholesale distribution implementation (Sales, Inventory, Purchase, Accounting, Studio/custom documents)</a></li>
+        <li><a href="https://www.upwork.com/freelance-jobs/apply/Odoo-freelancer-needed-setup-ERP-modules-API-data-import-Send-portfolio-quote_~022036452215836256556/">Upwork job — Setup ERP, modules, API, data import; send portfolio &amp; quote</a></li>
+        <li><a href="https://www.upwork.com/freelance-jobs/apply/Odoo-ERP-Specialist_~022030708020947203012/">Upwork job — Odoo ERP Specialist (CRM, Sales, Inventory, Accounting, custom modules, integrations)</a></li>
+        <li><a href="https://www.upwork.com/services/product/development-it-odoo-pos-inventory-and-sales-implementation-2067156272621024178">Catalog — POS, Inventory, and Sales implementation</a></li>
+        <li><a href="https://www.upwork.com/services/product/development-it-complete-odoo-implementation-erp-setup-for-your-business-1977852389397753477">Catalog — Complete Odoo implementation (Sales, Inventory, CRM, Accounting)</a></li>
+        <li><a href="https://www.upwork.com/hire/odoo-freelancers/">Upwork hire page — Odoo freelancers (implementation + custom modules + integrations language)</a></li>
+        <li><a href="https://www.upwork.com/services/browse/odoo-development">Catalog browse — odoo development (customization / module / report cards; website cards)</a></li>
+        <li>Freelancer work-history titles sampled: custom voucher module, Community setup &amp; custom modules, website updates, ecommerce finish, CRM/portal development (public profile pages).</li>
+      </ul>
+      <p>Official Docker reference used in setup: <a href="https://hub.docker.com/_/odoo">hub.docker.com/_/odoo</a> (image tags include 18.0 and 19.0 as of this snapshot).</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/site.js"></script>
+</body>
+</html>

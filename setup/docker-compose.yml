@@ -1,0 +1,43 @@
+# Odoo Primer — local Community lab
+# Official image pattern: https://hub.docker.com/_/odoo
+# Pin 18.0 (widely requested on Upwork as v17/v18). 19.0 exists; see setup notes.
+#
+# From this directory:
+#   docker compose up -d
+# Then open http://localhost:8069
+
+services:
+  web:
+    image: odoo:18.0
+    container_name: primer-odoo
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      PORT: "5432"
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: primer-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:

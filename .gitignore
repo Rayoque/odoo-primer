@@ -1,0 +1,38 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Odoo / Docker local state
+*.log
+*.pid
+setup/filestore/
+setup/.local-data/
+odoo-web-data/
+odoo-db-data/
+
+# Secrets — never commit a real master password or pg password file
+odoo_pg_pass
+setup/secrets/
+config/odoo.conf.local
+
+# Node (if anyone adds tooling later)
+node_modules/
+
+# Generated caches
+.cache/
+.pytest_cache/
+.mypy_cache/

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 5 — Custom module starter — Odoo Primer</title>
+  <meta name="description" content="Scaffold, model, view, and security for a small Odoo 18 custom module. Higher Upwork demand than Website-first.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="modules">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#why">Why this, not Website</a>
+      <a href="#anatomy">Anatomy</a>
+      <a href="#lab">Lab</a>
+      <a href="#security">Security</a>
+      <a href="#recall">Recall</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Module 05</p>
+      <h1>Custom module starter</h1>
+      <p class="lede">Most “can you just add a field?” jobs are module jobs. You will install a small, upgrade-safe addon that already lives in this repo: delivery instructions on the sales order, with User vs Manager rights.</p>
+      <div class="meta-row">
+        <span class="stamp rust">45 min</span>
+        <span class="stamp forest">Prereq: Modules 1–2, Docker addons mount</span>
+        <span class="stamp plum">Produces: installed addon + ACL demo</span>
+      </div>
+
+      <h2 id="why">Why custom modules beat Website for Module 5</h2>
+      <p>Website and eCommerce work exists on Upwork (catalog items like “a high-conversion Odoo website,” freelancer history with “Odoo Website Updates,” “Finish a Odoo Ecommerce”). Implementation posts, though, repeatedly ask for <em>customization</em>, <em>custom modules</em>, <em>custom documents</em>, and Python. Project catalog cards repeat “customization, module development, report writing.” The wholesale job wanted custom documents on top of Sales/Inventory/Accounting.</p>
+      <p>A custom module is also a better GitHub artifact than a theme screenshot. You can keep Website as a later track; do not skip security and inheritance.</p>
+      <p>Rules that keep you hireable:</p>
+      <ul>
+        <li>Never edit Odoo core. Extra-addons only.</li>
+        <li>Depend on official apps (<code>sale_management</code>, <code>stock</code>), not on copying their files.</li>
+        <li>Security files in the manifest <em>before</em> views if views need ACLs on new models.</li>
+        <li>Version string <code>18.0.x.y.z</code> so you remember the series.</li>
+      </ul>
+
+      <h2 id="anatomy">Anatomy of the lab module</h2>
+      <p>Path: <code>setup/addons/primer_delivery_instruction/</code></p>
+<pre><code>primer_delivery_instruction/
+  __init__.py
+  __manifest__.py
+  models/
+    __init__.py
+    delivery_instruction.py   # _name = primer.delivery.instruction
+    sale_order.py             # _inherit = sale.order
+  views/
+    delivery_instruction_views.xml
+    sale_order_views.xml      # inherit sale.view_order_form
+  security/
+    security.xml              # groups
+    ir.model.access.csv       # ACL
+</code></pre>
+      <p><strong>Manifest</strong> declares name, version <code>18.0.1.0.0</code>, depends, and data files in load order: security XML (groups), CSV (ACL), then views. License LGPL-3 matches typical Community addons.</p>
+      <p><strong>New model</strong> <code>primer.delivery.instruction</code>: name, many2one to <code>sale.order</code>, related partner, handling selection, state, two button methods. This is better teaching than only adding a <code>fields.Char</code> on <code>sale.order</code>, because you must write ACL.</p>
+      <p><strong>Inheritance</strong> on <code>sale.order</code>: one2many, count, window action for the smart button. XML xpath injects a stat button on <code>button_box</code> and a notebook page.</p>
+      <p>Odoo 18 list views use <code>&lt;list&gt;</code> (tree still often works). The lab uses <code>list</code>.</p>
+
+      <h2 id="lab">Lab — install and break it on purpose</h2>
+      <h3>1. Confirm the mount (5 min)</h3>
+<pre><code>docker compose -f setup/docker-compose.yml exec web ls /mnt/extra-addons
+# expect: primer_delivery_instruction
+docker compose -f setup/docker-compose.yml restart web
+</code></pre>
+      <p>If the folder is missing, your compose volume is wrong. Fix that before debugging Python.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m5-scaffold"> <code>ls</code> shows the module directory inside the container.</li>
+      </ul>
+
+      <h3>2. Read the Python (10 min)</h3>
+      <p>Open <code>delivery_instruction.py</code> and <code>sale_order.py</code>. You should be able to answer: what is <code>_name</code> vs <code>_inherit</code>? Why <code>ondelete="cascade"</code>? Why <code>store=True</code> on the related partner (searchable on the list)?</p>
+      <p><code>_name</code> creates a new table. <code>_inherit</code> patches an existing model. Doing both in one class is a different, advanced pattern (extension with a new model name) — not used here.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m5-model"> You annotated, in your tracker, one sentence each for <code>_name</code> and <code>_inherit</code>.</li>
+      </ul>
+
+      <h3>3. Install (10 min)</h3>
+      <ol class="lab">
+        <li>Developer mode on.</li>
+        <li>Apps → Update Apps List. Remove the “Apps” filter if the module is not <code>application: True</code> (it is a technical addon). Search “Primer Delivery”.</li>
+        <li>Install. If it errors, read the traceback: CSV group xml ids, xpath, missing dependency.</li>
+        <li>Refresh. App switcher should show <strong>Primer</strong>. Sales order form should show <strong>Instructions</strong> smart button and a notebook page.</li>
+      </ol>
+      <p>Create an instruction on the Northwind SO: handling Fragile, text “Do not double-stack pallets. Call Maya 30 min out.” Confirm the record with the header button.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m5-view"> Primer menu lists the record. SO smart button count is 1.</li>
+      </ul>
+
+      <h3>4. Security lab (12 min)</h3>
+      <p>Settings → Users: create <code>sales.lab</code> if needed. Grant Sales / User and <strong>Primer Delivery / User</strong>, not Manager. Log in as that user (incognito). Open an instruction. Edit text. Try <strong>delete</strong> — ACL for User is read/write/create, unlink 0. Manager has unlink 1.</p>
+      <p>Remove the Primer group entirely from a user and they should not open the model (Access Error). That is the demo you want on Loom: “here is the group, here is the CSV.”</p>
+      <p>Read <code>ir.model.access.csv</code>:</p>
+<pre><code>id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_primer_di_user,...,model_primer_delivery_instruction,group_primer_user,1,1,1,0
+access_primer_di_manager,...,model_primer_delivery_instruction,group_primer_manager,1,1,1,1
+</code></pre>
+      <p><code>model_primer_delivery_instruction</code> is automatic: <code>model_</code> + name with dots to underscores. Group xml ids live in the same module unless prefixed with <code>other_module.xmlid</code>.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m5-acl"> You reproduced Access Error or missing Delete as the User, and Delete as Manager (or admin).</li>
+      </ul>
+
+      <h3>5. Change, upgrade (8 min)</h3>
+      <p>Add a field, e.g. <code>priority = fields.Boolean()</code> on the instruction model, add it to the list view, then Apps → Upgrade the module (or <code>-u primer_delivery_instruction</code> if you later run odoo-bin). Restart is required for Python; XML-only can sometimes live-reload depending on flags. In Docker, restart web after Python edits.</p>
+      <p>If you skip Upgrade after XML changes, you will gaslight yourself. Manifest data files load on install/upgrade, not on every page view (except views in some dev modes).</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m5-install"> Screenshot pack: manifest snippet, Primer list, SO button, User denied delete.</li>
+      </ul>
+
+      <h2 id="security">ACL vs record rules (know the difference)</h2>
+      <p><strong>ACL</strong> (<code>ir.model.access</code>): can this group CRUD this model at all? <strong>Record rules</strong> (<code>ir.rule</code>): which rows? Example: salesperson sees only their own orders. The lab module does not add a record rule so you can see the difference. A real customer-isolation rule would be a follow-on exercise.</p>
+      <p>Empty <code>group_id</code> on an ACL row means everyone — usually a mistake on a new model.</p>
+
+      <div class="callout warn">
+        <h3>Scaffold command</h3>
+        <p>On a source install you would run <code>odoo-bin scaffold my_module /path/to/addons</code>. Official Docker does not make that convenient. Hand-built folders (this repo) are how many Community jobs actually look. If you later work on Odoo.sh, the repo <em>is</em> the extra-addons.</p>
+      </div>
+
+      <h2 id="recall">Recall prompts</h2>
+      <div class="quiz">
+        <p>Order of data files in the manifest for a new model?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Groups XML → <code>ir.model.access.csv</code> → views/menus. Views that assume the model is usable still need ACL loaded first to avoid access errors on install for non-admin, and groups must exist before CSV references them.</p>
+      </div>
+      <div class="quiz">
+        <p><code>_name</code> vs <code>_inherit</code>?</p>
+        <button type="button">Reveal</button>
+        <p class="answer"><code>_name</code> new model/table. <code>_inherit</code> extend existing model in place.</p>
+      </div>
+      <div class="quiz">
+        <p>Why did Apps search hide your module?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Default Apps view filters <code>application = True</code>. This lab module is <code>application: False</code>. Clear the filter or search technical name.</p>
+      </div>
+      <div class="quiz">
+        <p>User can read but not delete. Which file?</p>
+        <button type="button">Reveal</button>
+        <p class="answer"><code>ir.model.access.csv</code> <code>perm_unlink=0</code> on the User group row. Not a record rule.</p>
+      </div>
+      <div class="quiz">
+        <p>You changed Python and nothing happened. First restart or upgrade?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Restart the Odoo process to load Python. Then upgrade if you also changed XML/CSV or need to load new fields into the registry/database columns (new fields usually need restart; Odoo updates columns on registry load, but XML snapshots need upgrade).</p>
+      </div>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>Module installs on your Docker Community DB without a traceback.</li>
+          <li>You created an instruction from the SO and from the Primer menu.</li>
+          <li>You demonstrated User vs Manager unlink.</li>
+          <li>You can explain why this is safer than editing <code>sale/models/sale_order.py</code> in core.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <p>This is <a href="../exercises/03-custom-delivery-module.html">Exercise 03</a>. Pack the module folder (not all of Odoo). Proposal language:</p>
+      <blockquote>Small upgrade-safe module: extra delivery handling notes on the sales order, warehouse-facing list, User/Manager ACL. Same pattern I use for “add a field / custom document” requests instead of editing core or depending on Studio.</blockquote>
+      <p>Website/eCommerce lite remains valid later: a simple shop page with the same products. It is not the higher-frequency door opener in the implementation posts we sampled. See <a href="../demand.html">demand notes</a>.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

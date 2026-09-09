@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_primer_delivery_instruction_list" model="ir.ui.view">
+        <field name="name">primer.delivery.instruction.list</field>
+        <field name="model">primer.delivery.instruction</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sale_id"/>
+                <field name="partner_id"/>
+                <field name="handling"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_primer_delivery_instruction_form" model="ir.ui.view">
+        <field name="name">primer.delivery.instruction.form</field>
+        <field name="model">primer.delivery.instruction</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="Mark done"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sale_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="handling"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="instruction" placeholder="Dock hours, lift-gate, call-ahead, etc."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_primer_delivery_instruction" model="ir.actions.act_window">
+        <field name="name">Delivery instructions</field>
+        <field name="res_model">primer.delivery.instruction</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a delivery instruction</p>
+            <p>Attach handling notes to a sales order so warehouse staff see them before picking.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_primer_root"
+              name="Primer"
+              sequence="80"/>
+    <menuitem id="menu_primer_delivery"
+              name="Delivery instructions"
+              parent="menu_primer_root"
+              action="action_primer_delivery_instruction"
+              sequence="10"/>
+</odoo>

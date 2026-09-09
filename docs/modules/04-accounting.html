@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 4 — Accounting for implementers — Odoo Primer</title>
+  <meta name="description" content="Chart of accounts, invoices, bills, payments in Odoo Community Invoicing, with Enterprise caveats.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="modules">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#why">Why Upwork</a>
+      <a href="#honest">Community vs Enterprise</a>
+      <a href="#concepts">Concepts</a>
+      <a href="#lab">Lab</a>
+      <a href="#recall">Recall</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Module 04</p>
+      <h1>Accounting basics for implementers</h1>
+      <p class="lede">You are not the client’s CPA. You are the person who makes invoices post, taxes land on the right account, and payments mark invoices paid. This sitting is conceptual plus a Community Invoicing lab. Stay honest about Enterprise.</p>
+      <div class="meta-row">
+        <span class="stamp rust">45 min</span>
+        <span class="stamp forest">Prereq: Modules 1–3</span>
+        <span class="stamp plum">Produces: posted invoice + payment</span>
+      </div>
+
+      <h2 id="why">Why this shows up on Upwork</h2>
+      <p>Wholesale and “full ERP” jobs name Accounting and Invoicing next to Sales and Inventory. They ask for invoices from sales orders/deliveries, payment status and aging, vendor bills from purchase orders, chart of accounts, taxes. Implementer posts treat Accounting as a module to configure, not as a five-year finance transformation. Your portfolio should show a posted customer invoice, a vendor bill, and a payment — with the journal items visible — not a screenshot of the dashboard gadget.</p>
+
+      <h2 id="honest">Community Invoicing vs Enterprise Accounting</h2>
+      <p>The official Docker image is Community. Community includes the <strong>Invoicing</strong> app (<code>account</code>): charts via localization, customer invoices, vendor bills, credit notes, taxes, journals, payments, basic reports. Enterprise Accounting adds a lot of the product marketing: bank sync, the polished reconciliation workspace, assets, follow-up letters, consolidations, some analytic/budget features, and Studio on top.</p>
+      <p>Odoo.sh is Enterprise. If a job requires Studio screens or bank-feed setup, say so in the proposal and price the edition correctly. Do not install random “accounting kit” third-party modules on a portfolio database you cannot explain.</p>
+
+      <h2 id="concepts">The map in your head</h2>
+      <table>
+        <thead><tr><th>Idea</th><th>Odoo object</th><th>Implementer job</th></tr></thead>
+        <tbody>
+          <tr><td>Chart of accounts</td><td><code>account.account</code></td><td>Loaded by localization at database create. Add accounts; do not delete blindly. Archive.</td></tr>
+          <tr><td>Journal</td><td><code>account.journal</code></td><td>Sales, purchase, bank, cash, miscellaneous. Documents post here.</td></tr>
+          <tr><td>Tax</td><td><code>account.tax</code></td><td>Linked on products and fiscal positions. Wrong tax = angry client.</td></tr>
+          <tr><td>Fiscal position</td><td><code>account.fiscal.position</code></td><td>Maps taxes/accounts for out-of-state or export customers.</td></tr>
+          <tr><td>Invoice</td><td><code>account.move</code> (out_invoice)</td><td>Customer bill. Confirm/post creates journal items.</td></tr>
+          <tr><td>Vendor bill</td><td><code>account.move</code> (in_invoice)</td><td>From PO or standalone.</td></tr>
+          <tr><td>Journal items</td><td><code>account.move.line</code></td><td>The debit/credit truth.</td></tr>
+          <tr><td>Payment</td><td>payment wizard / <code>account.payment</code></td><td>Marks invoices paid; hits bank/cash journal.</td></tr>
+          <tr><td>Sequence</td><td><code>ir.sequence</code></td><td>INV/2026/… — clients obsess over this at go-live.</td></tr>
+        </tbody>
+      </table>
+      <p>In modern Odoo, invoices <em>are</em> journal entries (<code>account.move</code>) with a move type. Confirming an invoice is posting a move. That is why “delete this invoice” after post is the wrong request; you credit note it.</p>
+      <h3>Product accounts</h3>
+      <p>Income and expense accounts usually come from the <strong>product category</strong>, not each product. Implementers who set accounts on 400 products by hand make upgrades miserable. Category “Saleable” → income 400000-ish, expense/COGS as the localization defines.</p>
+      <h3>Inventory valuation (do not pretend)</h3>
+      <p>If stock is automated into the ledger, every receipt and delivery (or, in Odoo 19, invoice-time perpetual) posts extra journal items. Wrong valuation accounts = month-end nightmare. For Community labs, leave valuation manual unless you are following a finance owner’s written choice. You still set product cost so margin reports are not fiction.</p>
+      <h3>Order of configuration (steal this for proposals)</h3>
+      <ol>
+        <li>Localization / company / currency</li>
+        <li>Chart of accounts tweaks</li>
+        <li>Taxes and fiscal positions</li>
+        <li>Journals and payment terms</li>
+        <li>Product categories (accounts)</li>
+        <li>Then Sales / Inventory documents</li>
+      </ol>
+      <p>Turning on Sales before taxes exist is how demo invoices post with 0% and nobody notices until week four.</p>
+
+      <h2 id="lab">Lab</h2>
+      <h3>1. Open the chart (8 min)</h3>
+      <p>Invoicing (or Accounting) → Configuration → Chart of Accounts. Filter type Receivable, then Income, then Expense. Find the default income account your beans product will use: product category → Accounting tab (developer mode helps). Note one receivable account and one bank journal (Configuration → Journals).</p>
+      <p>Company form: currency, country. If you picked United States at database create, you have a US-ish chart and tax lines. If you picked a generic or other country, do not mix screenshots as “US GAAP setup.”</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m4-coa"> You wrote down: receivable account code, income account code, bank journal name.</li>
+      </ul>
+
+      <h3>2. Tax on the product (5 min)</h3>
+      <p>Open HB-BEAN-25. Customer taxes: pick a sales tax from the localization (or none if you are modeling wholesale tax-exempt — then say that out loud). Fiscal position on Northwind: if they are a reseller, you may map tax to 0%. For the lab, a simple sales tax is clearer on the invoice PDF.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m4-tax"> You can explain why the invoice tax line is that amount (rate × base).</li>
+      </ul>
+
+      <h3>3. Customer invoice from the SO (10 min)</h3>
+      <p>If Module 3 delivered the beans, Create Invoice on the SO should offer a regular invoice for 20 bags. Create and post (Confirm). Open the invoice → Journal Items (developer mode or the journal items tab). You want to see: debit receivable, credit income, tax lines if any.</p>
+      <p>If the SO cannot invoice: invoicing policy is delivery and delivery is not done — go finish Module 3, or invoice the service product <code>SVC-ONB</code> as a standalone invoice: Invoicing → Customers → Invoices → New.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m4-invoice"> Posted customer invoice. Journal items screenshot saved.</li>
+      </ul>
+
+      <h3>4. Vendor bill (8 min)</h3>
+      <p>If you had a PO for 100 bags, Create Bill from the PO after (or before, depending on bill-on-receipt policy) and post it. Otherwise: Invoicing → Vendors → Bills → New, vendor Andean, one line beans qty 100, price 28, post.</p>
+      <p>Read the items: debit expense or stock-related account depending on configuration, credit payable. You do not need to win a debate with an accountant today; you need to see payable go up.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m4-bill"> Posted vendor bill with a payable line you can point at.</li>
+      </ul>
+
+      <h3>5. Payment (8 min)</h3>
+      <p>On the customer invoice: Register Payment. Journal: Bank. Amount: full. Post. Invoice payment state should become Paid (or In Payment, depending on version and whether you still need to reconcile a bank statement). Community without bank rec still lets you register a payment against the invoice.</p>
+      <p>Optional: register a partial payment to see residual amount. Aging: Invoicing → Reporting → Partner Ledger or Aged Receivable if present. Screenshot.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m4-pay"> Customer invoice shows paid/in payment. You did not “just change the state” in a hack.</li>
+      </ul>
+
+      <div class="callout danger">
+        <h3>Never</h3>
+        <p>Never delete posted moves. Never give sales users Accountant rights “so they can fix it.” Never go live without a finance person signing the tax mapping. You can still be the implementer who prepares the chart and records the session.</p>
+      </div>
+
+      <h2 id="recall">Recall prompts</h2>
+      <div class="quiz">
+        <p>What model is a posted invoice?</p>
+        <button type="button">Reveal</button>
+        <p class="answer"><code>account.move</code> with type out_invoice. Lines are <code>account.move.line</code>.</p>
+      </div>
+      <div class="quiz">
+        <p>A client on Community asks for Odoo Studio to add a field on the invoice. Your answer?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Studio is Enterprise. On Community you add a small custom module (Module 5) or they buy Enterprise.</p>
+      </div>
+      <div class="quiz">
+        <p>Why configure taxes before the first real invoice?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Posted invoices freeze tax lines. Fixing history is credit notes and embarrassment. Product categories and fiscal positions need to be right first.</p>
+      </div>
+      <div class="quiz">
+        <p>Invoice-on-delivery vs invoice-on-order — which wholesale job is that?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Physical goods: usually delivered quantities so you do not bill what you could not ship. Services: ordered quantities.</p>
+      </div>
+      <div class="quiz">
+        <p>Where should the default income account live?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Product category accounting fields, overridden on the product only when one SKU is special.</p>
+      </div>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>You posted a customer invoice and can read its journal items.</li>
+          <li>You posted a vendor bill.</li>
+          <li>You registered a payment and the invoice is no longer “not paid.”</li>
+          <li>You can say what Community does not include (Studio, sh, full Accounting suite) without sounding bitter.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <ul>
+        <li>Screenshot trio: invoice form, journal items, paid banner.</li>
+        <li>One sentence on localization: “US chart from database creation; taxes reviewed with their bookkeeper.”</li>
+        <li>Do not title the portfolio piece “Full Odoo Accounting implementation” if you only posted invoices on Community. Title it “Quote-to-cash invoicing and payments (Community)” or “Invoicing setup for Harborline lab.”</li>
+        <li>If the job is Enterprise, say you will configure on their sh/staging, not that your Docker Community file is their ledger.</li>
+      </ul>
+      <p>Next: <a href="05-custom-module.html">Module 5 — Custom module starter</a>.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

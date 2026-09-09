@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio packing — Odoo Primer</title>
+  <meta name="description" content="How to pack Odoo lab artifacts for an Upwork profile without fake clients.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-depth="0" data-page="portfolio">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#rules">Rules</a>
+      <a href="#folders">Folders</a>
+      <a href="#profile">Profile</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Upwork</p>
+      <h1>Portfolio packing</h1>
+      <p class="lede">Every exercise page ends with a packing list. This page is the house style so the profile does not look like five unrelated screenshots.</p>
+
+      <h2 id="rules">Rules</h2>
+      <ul>
+        <li>Label lab work as lab work. Harborline is fiction.</li>
+        <li>Demo data names are banned on portfolio shots.</li>
+        <li>One story per portfolio item: wholesale loop, lead-to-cash, custom module, import.</li>
+        <li>Blur master passwords and personal email.</li>
+        <li>Do not count this primer as “N client implementations.”</li>
+      </ul>
+
+      <h2 id="folders">On disk</h2>
+<pre><code>portfolio/
+  harborline-erp/          # EX01
+  lead-to-cash/            # EX02
+  delivery-module/         # EX03
+  master-data-import/      # EX04
+</code></pre>
+      <p>Each folder: numbered PNGs, <code>loom-script.md</code>, 4-sentence <code>blurb.md</code>. The custom module code stays in <code>setup/addons/</code> — the portfolio folder only points to it.</p>
+      <p>Start from <a href="exercises/index.html">exercises</a>. Track ticks on <a href="progress.html">progress</a>.</p>
+
+      <h2 id="profile">Profile building blocks (after the four exercises)</h2>
+      <p><strong>Title idea:</strong> Odoo 18 Community implementer — Sales, Inventory, Invoicing, small custom modules</p>
+      <p><strong>Overview skeleton:</strong> you configure the quote-to-cash and procure-to-pay loop on Community with Docker; you ship small extra-addons instead of core edits; you import contacts/products on a duplicate DB first; Enterprise/Odoo.sh when the client already has it. Link the public GitHub repo once it is under Rayoque.</p>
+      <p>Skills to tick only if true: Odoo, ERP, Python (after Module 5), PostgreSQL, Inventory Management, CRM.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/site.js"></script>
+</body>
+</html>

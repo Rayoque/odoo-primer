@@ -1,0 +1,6 @@
+name,default_code,type,categ_id,list_price,standard_price,uom_id,purchase_ok,sale_ok,invoice_policy
+Organic Black Beans 25kg,HB-BEAN-25,product,All / Saleable,42.00,28.00,Units,1,1,delivery
+Jasmine Rice 20kg,HB-RICE-20,product,All / Saleable,38.50,24.00,Units,1,1,delivery
+Cold-pressed Olive Oil 4L,HB-OIL-4,product,All / Saleable,55.00,33.00,Units,1,1,delivery
+Corrugated Shipper 12x12,PK-BOX-12,consu,All / Expenses,2.10,1.40,Units,1,0,order
+Wholesale onboarding,SVC-ONB,service,All / Services,250.00,0.00,Units,0,1,order

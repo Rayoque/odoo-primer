@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spaced review — Odoo Primer</title>
+  <meta name="description" content="Spaced retrieval schedule for the Odoo primer modules and exercises.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-depth="0" data-page="review">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#cadence">Cadence</a>
+      <a href="#prompts">Prompt bank</a>
+      <a href="#log">Log</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Sticky</p>
+      <h1>Spaced review schedule</h1>
+      <p class="lede">After each module, put six dates on a calendar. Reviews are shorter than labs. If you miss one, do it the next morning — do not stack three reviews into a binge.</p>
+      <p>Markdown copy: <code>progress/REVIEW.md</code>.</p>
+
+      <h2 id="cadence">Cadence</h2>
+      <table>
+        <thead><tr><th>Slot</th><th>When</th><th>Minutes</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>D0</td><td>Same day, later</td><td>10</td><td>Redraw the flow from memory. Do not open Odoo first.</td></tr>
+          <tr><td>D1</td><td>+1 day</td><td>15</td><td>Open the DB, find yesterday’s records with no notes.</td></tr>
+          <tr><td>D3</td><td>+3 days</td><td>20</td><td>Answer the module quizzes closed-book, then break one thing (cancel SO, wrong tax) and fix it.</td></tr>
+          <tr><td>D7</td><td>+7 days</td><td>20</td><td>Write an 8-line Upwork proposal snippet for that skill.</td></tr>
+          <tr><td>D14</td><td>+14 days</td><td>40</td><td>Repeat the matching exercise on a duplicated DB.</td></tr>
+          <tr><td>D30</td><td>+30 days</td><td>20</td><td>Watch your Loom on mute; list three gaps.</td></tr>
+        </tbody>
+      </table>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="rev-d0"> D0 same-day recall done at least once</li>
+        <li><input type="checkbox" data-task="rev-d1"> D1</li>
+        <li><input type="checkbox" data-task="rev-d3"> D3</li>
+        <li><input type="checkbox" data-task="rev-d7"> D7</li>
+        <li><input type="checkbox" data-task="rev-d14"> D14</li>
+        <li><input type="checkbox" data-task="rev-d30"> D30</li>
+      </ul>
+
+      <h2 id="prompts">Prompt bank (rotate)</h2>
+      <ol>
+        <li>Master password vs admin user.</li>
+        <li>What lives in PostgreSQL vs filestore vs extra-addons.</li>
+        <li>Lead vs opportunity vs quotation vs order — models.</li>
+        <li>When Create Invoice is disabled.</li>
+        <li>On-hand vs forecasted.</li>
+        <li>1-step vs 2-step receipt: where is the qty?</li>
+        <li>Product category vs product for income account.</li>
+        <li>Community Invoicing vs Enterprise Accounting vs Studio vs Odoo.sh.</li>
+        <li><code>_name</code> vs <code>_inherit</code>.</li>
+        <li>ACL vs record rule; who can delete delivery instructions.</li>
+        <li>Why Harborline invoices on delivered quantities.</li>
+        <li>What you will not claim on Upwork this month.</li>
+      </ol>
+
+      <h2 id="log">How to log</h2>
+      <p>In <code>progress/REVIEW.md</code> add a row: date, slot, module, one thing you missed. The miss is the whole point. Tick the matching box here so the live bar on <a href="progress.html">Progress</a> moves.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/site.js"></script>
+</body>
+</html>

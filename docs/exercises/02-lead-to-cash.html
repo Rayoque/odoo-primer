@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EX02 — Lead-to-cash demo reel — Odoo Primer</title>
+  <meta name="description" content="Record a 4-minute Odoo CRM to invoice demo with a script and screenshot strip for Upwork.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="exercises">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#demand">Demand theme</a>
+      <a href="#brief">Brief</a>
+      <a href="#script">Loom script</a>
+      <a href="#show">What to show on Upwork</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Exercise 02 · portfolio</p>
+      <h1>Lead-to-cash demo reel</h1>
+      <div class="meta-row">
+        <span class="stamp rust">35–40 min</span>
+        <span class="stamp forest">Prereq: Modules 2–4, stock on hand</span>
+        <span class="stamp plum">Output: unlisted video + script</span>
+      </div>
+
+      <h2 id="demand">Demand theme</h2>
+      <p>Hire pages and freelancer profiles for Odoo on Upwork cluster around CRM + Sales + Inventory + Invoicing as one integrated flow. Catalog services advertise “Sales pipelines: quotations … instant delivery order generation.” Jobs tell applicants to send a portfolio. A silent PDF of a kanban is weak. A 4-minute path from lead to paid invoice is what a buyer can forward to their operations person.</p>
+      <p>You are not claiming a conversion rate. You are showing you can operate the product they named.</p>
+
+      <h2 id="brief">Constraints</h2>
+      <ul>
+        <li>Database: <code>primer_portfolio</code>, demo data off.</li>
+        <li>One customer (Northwind), one contact (Maya), one SKU (beans) already in stock from EX01 or a quick receipt.</li>
+        <li>Leads enabled so the first 30 seconds are not “we skip qualification.”</li>
+        <li>No music. No intro logo. Cursor large. Cut silence.</li>
+        <li>Record with whatever is free: OBS, browser recorder, phone pointed at the screen if you must. Loom’s free tier is allowed if you already have it; this primer does not require a paid Loom plan — a listed script plus screenshots still counts if video is blocked.</li>
+      </ul>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="ex2-script"> Script printed or in a second monitor. You rehearsed once without recording.</li>
+        <li><input type="checkbox" data-task="ex2-record"> Take recorded in one pass or two cuts max. Filename <code>harborline-lead-to-cash.mp4</code>.</li>
+        <li><input type="checkbox" data-task="ex2-pack"> <code>portfolio/lead-to-cash/</code> contains script, 6 PNGs, and a link or the video file (git-lfs not required; do not commit a huge mp4 if GitHub complains — link unlisted instead).</li>
+      </ul>
+
+      <h2 id="script">Talk track (about 4:00)</h2>
+<pre><code>0:00 This is a lab database, Odoo 18 Community, company Harborline.
+     Path: lead → opportunity → quotation → order → delivery → invoice → payment.
+
+0:20 CRM: Leads are on. New lead, Maya at Northwind, 20 bags of beans,
+     expected revenue 840. Convert to opportunity, link the company contact.
+     Activity: call tomorrow. That is how a manager sees follow-up.
+
+1:10 New quotation from the opportunity. Product HB-BEAN-25, qty 20,
+     invoicing policy delivered quantities. Preview. Confirm — it is now
+     a sales order, not a second document.
+
+2:00 Inventory: delivery smart button, stock reserved from the receipt
+     we did earlier. Validate. On-hand drops. Stock move Stock → Customer.
+
+2:40 Create invoice. It is allowed because we delivered. Confirm.
+     Journal items: receivable, income, tax if any. Register payment, bank.
+     Invoice paid.
+
+3:20 Back on the opportunity: quotations/orders smart buttons, marked Won.
+     What I need from a real client: stages they actually use, who may
+     confirm orders, and tax owner. End.</code></pre>
+
+      <div class="done-when">
+        <h2>Done when</h2>
+        <ul>
+          <li>A non-Odoo friend can tell you the six steps after watching once.</li>
+          <li>You say “lab database” in the first ten seconds.</li>
+          <li>The script file is in git even if the video is not.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <ul>
+        <li><strong>Profile:</strong> a portfolio item titled “Odoo 18 Community — lead to cash (lab)” with the six-step strip.</li>
+        <li><strong>Proposal:</strong> first sentence names their modules; second sentence offers a 4-minute walkthrough of this path on <em>their</em> staging DB; third sentence links the unlisted video if the job asked for samples.</li>
+        <li><strong>Do not</strong> auto-play video in the proposal text dump. Link it. Many buyers skim.</li>
+        <li>Screenshot filenames: <code>01-lead.png</code> … <code>06-paid-invoice.png</code>.</li>
+      </ul>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

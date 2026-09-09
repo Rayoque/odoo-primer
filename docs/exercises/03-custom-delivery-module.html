@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EX03 — Custom delivery module — Odoo Primer</title>
+  <meta name="description" content="Portfolio exercise: install and demo an upgrade-safe Odoo custom module with ACL.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="exercises">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#demand">Demand theme</a>
+      <a href="#brief">Brief</a>
+      <a href="#show">What to show on Upwork</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Exercise 03 · portfolio</p>
+      <h1>Custom delivery instructions module</h1>
+      <div class="meta-row">
+        <span class="stamp rust">40–45 min</span>
+        <span class="stamp forest">Prereq: Module 5</span>
+        <span class="stamp plum">Repo folder is the artifact</span>
+      </div>
+
+      <h2 id="demand">Demand theme</h2>
+      <p>The wholesale implementation post included <em>custom documents</em> and Odoo Studio in scope. Other open jobs asked to “develop or modify custom modules if required” and “basic customization &amp; automation.” Upwork catalog cards repeat “Odoo developer for customization, module development, report writing” and “Odoo Custom Module Development.” A Freelancer.com Odoo 18 customization brief (same market pattern) asked for extra fields on leads/quotes/orders and custom reports as upgrade-safe Python/XML modules with git delivery.</p>
+      <p>Studio is Enterprise. This exercise is the Community-shaped answer: a tiny module in git.</p>
+
+      <h2 id="brief">What you ship</h2>
+      <p>Module <code>primer_delivery_instruction</code> already in <code>setup/addons/</code>. Your job is not to rewrite it from zero unless you want the reps. Your job is to <strong>install, demo, and pack it like a client delivery</strong>.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="ex3-module"> Installed on <code>primer_portfolio</code>. Instruction on a real Harborline SO. Fragile handling note visible on the order page and in the Primer menu.</li>
+        <li><input type="checkbox" data-task="ex3-security"> Second user <code>sales.lab</code> is Primer User: can create, cannot delete. Screenshot of the Access Error or missing delete. Manager/admin can delete.</li>
+        <li><input type="checkbox" data-task="ex3-pack"> Delivery note: <code>portfolio/delivery-module/HANDOFF.md</code> with depends, groups to assign, and “how to upgrade.” Link to the module path in this repo.</li>
+      </ul>
+      <h3>Optional stretch (if time)</h3>
+      <p>Add a boolean <code>print_on_delivery</code> and show it on the list. Upgrade the module. That single extra field is the “yes I can change it” moment on a sales call. Do not start a PDF report in this sitting unless you already know QWeb.</p>
+
+      <div class="done-when">
+        <h2>Done when</h2>
+        <ul>
+          <li>A reviewer can clone the repo, compose up, install the module, and see the smart button without you on a call.</li>
+          <li>HANDOFF.md names the groups exactly as in Settings.</li>
+          <li>You did not copy core <code>sale</code> files into the addon.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <h3>GitHub artifact</h3>
+      <p>The folder <code>setup/addons/primer_delivery_instruction/</code> with README. When the repo is public under Rayoque, that URL is the portfolio link. Do not zip all of Odoo.</p>
+      <h3>Screenshots</h3>
+      <ol>
+        <li>Manifest (version 18.0.1.0.0, depends)</li>
+        <li>Apps install card</li>
+        <li>SO smart button + notebook page</li>
+        <li>Primer list</li>
+        <li>ACL CSV + user form groups</li>
+        <li>User cannot delete / manager can</li>
+      </ol>
+      <h3>Loom (2:30)</h3>
+<pre><code>0:00 Community, no Studio. Extra-addons mount.
+0:25 Install Primer Delivery Instructions.
+0:50 Create a handling note on a sales order.
+1:20 Switch to sales.lab — edit works, delete does not.
+1:50 Files: _name model, _inherit sale.order, ACL CSV.
+2:10 Same pattern for “add a field” and “custom document” jobs.</code></pre>
+      <h3>Proposal snippet</h3>
+      <blockquote>For custom fields and small documents I ship an upgrade-safe module (Python model, XML views, ir.model.access groups) in git — not core edits, not Studio-only, so you can move hosts. Example: delivery handling instructions on the sales order with User vs Manager rights.</blockquote>
+      <h3>Do not claim</h3>
+      <p>OWL frontend expertise, report engines, or “20+ custom modules” until that is true. One honest module beats a fake count.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 1 — Setup &amp; navigation — Odoo Primer</title>
+  <meta name="description" content="Stand up Odoo 18 Community with Docker, create lab databases, map the UI, enable developer mode.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="modules">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#meta">Session</a>
+      <a href="#why">Why Upwork cares</a>
+      <a href="#concepts">Concepts</a>
+      <a href="#lab">Lab</a>
+      <a href="#ui">UI map</a>
+      <a href="#recall">Recall</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Module 01</p>
+      <h1>Setup &amp; navigation</h1>
+      <p class="lede">Get a Community database you trust, learn where things live, and stop being scared of the database manager. This sitting is plumbing. Treat it like a pre-flight, not like reading the manual.</p>
+      <div class="meta-row" id="meta">
+        <span class="stamp rust">35 min</span>
+        <span class="stamp forest">Prereq: Docker</span>
+        <span class="stamp plum">Produces: running lab + UI map</span>
+      </div>
+
+      <h2 id="why">Why this shows up on Upwork</h2>
+      <p>Open jobs titled along the lines of “setup ERP, modules, API, data import” and “Odoo ERP Specialist” start with <em>setup Odoo (cloud or on-premise)</em>, user access, and then CRM / Sales / Inventory / Accounting. Nobody pays for “I installed Docker” as a standalone gig. They do bounce implementers who cannot create a database, turn on developer mode, or explain Community vs Enterprise without hand-waving.</p>
+      <p>Your goal is competence you can narrate: “I stand up Community on Docker with PostgreSQL, extra-addons, named volumes; for Enterprise clients I work in their Odoo.sh.”</p>
+
+      <h2 id="concepts">Concepts to retrieve later</h2>
+      <h3>Four products people confuse</h3>
+      <table>
+        <thead><tr><th>Name</th><th>What it is</th><th>Money</th></tr></thead>
+        <tbody>
+          <tr><td>Odoo Community</td><td>LGPL server + apps. Official Docker image is this.</td><td>Software: $0. Hosting: your machine or VPS.</td></tr>
+          <tr><td>Odoo Enterprise</td><td>Same core plus paid apps (Studio, fuller Accounting, etc.)</td><td>Per-user subscription to Odoo S.A.</td></tr>
+          <tr><td>Odoo Online</td><td>SaaS at odoo.com. Fast click-demo. Weak for extra-addons.</td><td>Trial then paid.</td></tr>
+          <tr><td>Odoo.sh</td><td>Git hosting + staging. Enterprise-only.</td><td>Bundled with Enterprise hosting.</td></tr>
+        </tbody>
+      </table>
+      <h3>Process vs data</h3>
+      <p>Odoo is a Python process. PostgreSQL holds records. The <strong>filestore</strong> holds attachments. Lose one of the three and you have a mystery. Compose in this repo keeps DB and filestore in Docker named volumes so <code>docker compose down</code> (without <code>-v</code>) does not wipe the lab.</p>
+      <h3>Master password vs admin user</h3>
+      <p>The master password (<code>admin_passwd</code>) gates <code>/web/database/manager</code>: create, duplicate, drop, backup. The admin user is a <code>res.users</code> row inside a database. Mixing them up is a classic first-week failure.</p>
+      <h3>Apps vs modules</h3>
+      <p>An <strong>app</strong> is a module with a store icon (<code>application: True</code>). Technical modules hide until developer mode. “Install CRM” is Apps. “Upgrade my custom module” is also Apps, after <strong>Update Apps List</strong>.</p>
+
+      <h2 id="lab">Lab</h2>
+      <h3>1. Start the stack (8 min)</h3>
+      <pre><code>cd setup
+docker compose up -d
+docker compose ps
+docker compose logs --tail=80 web</code></pre>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-docker"> <code>primer-odoo</code> and <code>primer-db</code> are up. Browser loads <a href="http://localhost:8069">http://localhost:8069</a>.</li>
+      </ul>
+      <p>If 8069 is busy, change the compose port mapping to <code>8070:8069</code> and use that URL. Do not run two Odoo containers on the same port and hope.</p>
+
+      <h3>2. Create <code>primer_learn</code> (7 min)</h3>
+      <ol class="lab">
+        <li>Master password: <code>primer-master-change-me</code> unless you changed <code>odoo.conf</code>.</li>
+        <li>Database name: <code>primer_learn</code>.</li>
+        <li>Email + password: yours. Do not commit them.</li>
+        <li>Country: United States (matches Harborline exercises).</li>
+        <li>Demo data: <strong>on</strong>.</li>
+        <li>Wait. First database creation downloads nothing extra but it compiles assets and loads localization. That can take a few minutes.</li>
+      </ol>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-db"> You can log in and see the home / app switcher.</li>
+      </ul>
+
+      <h3>3. Install the four apps this primer actually uses (6 min)</h3>
+      <p>Apps → search and install <strong>CRM</strong>, <strong>Sales</strong>, <strong>Inventory</strong>, <strong>Invoicing</strong>. Also install <strong>Purchase</strong> if you want receipts from vendor POs in Module 3. Decline the urge to install Website, eLearning, and Dashboards “while you are here.” Extra apps add menus and settings noise.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-apps"> CRM, Sales, Inventory, Invoicing show as installed.</li>
+      </ul>
+
+      <h3>4. Developer mode (4 min)</h3>
+      <p>Settings → scroll to the bottom → <strong>Activate the developer mode</strong>. (Some versions: the bug icon after you enable it from Settings → General Settings, or add <code>?debug=1</code> to the URL.)</p>
+      <p>You now get:</p>
+      <ul>
+        <li>A bug/beetle menu: Edit View, View Fields, Technical menu</li>
+        <li>Settings → Technical (Sequences, Parameters, User-defined defaults)</li>
+        <li>Apps → <strong>Update Apps List</strong></li>
+      </ul>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-dev"> Bug icon visible. Technical menu visible under Settings.</li>
+      </ul>
+
+      <h3>5. Users, company, language (5 min)</h3>
+      <p>Settings → Users &amp; Companies → Company: set the company name to <strong>Harborline Wholesale (lab)</strong> on the portfolio database later. On <code>primer_learn</code> you can leave demo company names; just know where the record lives (<code>res.company</code>).</p>
+      <p>Create a second user: <code>warehouse.lab</code> with Inventory / User rights only. You will need a non-admin user in Module 5 to prove ACL. Do it now while the Users form is in your muscle memory.</p>
+
+      <h2 id="ui">UI map (the screenshot sitting)</h2>
+      <p>Open each of these once. Say the name out loud. Capture a single PNG of the app switcher.</p>
+      <table>
+        <thead><tr><th>Control</th><th>Where</th><th>What it is for</th></tr></thead>
+        <tbody>
+          <tr><td>App switcher (grid)</td><td>Top-left</td><td>Installed apps only</td></tr>
+          <tr><td>Search / command</td><td>Center or <kbd>/</kbd> depending on version</td><td>Jump to menus and records</td></tr>
+          <tr><td>Discuss</td><td>App</td><td>Chatter lives on records too; this is the inbox</td></tr>
+          <tr><td>Settings</td><td>App</td><td>Company, users, apps settings, technical</td></tr>
+          <tr><td>User menu</td><td>Top-right</td><td>Preferences, debug, documentation, log out</td></tr>
+          <tr><td>Chatter</td><td>Right of most forms</td><td>Log, notes, activities — clients live here</td></tr>
+          <tr><td>Kanban / list / form</td><td>View switcher</td><td>Same model, different <code>ir.ui.view</code></td></tr>
+          <tr><td>Filters / Group By / Favorites</td><td>Search bar</td><td>What you will later automate with domains</td></tr>
+        </tbody>
+      </table>
+      <p>Database manager URL: <code>http://localhost:8069/web/database/manager</code>. Bookmark it. Practice <strong>Backup</strong> once — download the zip (includes filestore if you tick that option). That zip is not a git artifact; it is your undo.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-ui"> Screenshot of app switcher + one form with chatter open, saved as <code>portfolio/setup/01-ui-map.png</code>.</li>
+        <li><input type="checkbox" data-task="m1-backup"> You have produced a backup zip or at least clicked through the backup dialog so you know the password prompt.</li>
+      </ul>
+
+      <div class="callout">
+        <h3>Create <code>primer_portfolio</code> when you are not tired</h3>
+        <p>Same steps, demo data <strong>off</strong>. Install the same four apps. Rename the company to Harborline Wholesale. This is the only database you screenshot for Upwork. Mixing demo customers named “Azure Interior” into a portfolio is how you look like a tutorial tab, not an implementer.</p>
+      </div>
+
+      <h2 id="recall">Recall prompts</h2>
+      <p>Close the extra tabs. Answer without looking.</p>
+      <div class="quiz">
+        <p>Where do product images go if you back up SQL only?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Filestore under <code>/var/lib/odoo/filestore/&lt;db&gt;</code>. SQL-only restore shows broken attachments.</p>
+      </div>
+      <div class="quiz">
+        <p>You can log in as admin but cannot create a new database. What is missing?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">The master password for <code>/web/database/manager</code>, from <code>admin_passwd</code> — not the admin user’s password.</p>
+      </div>
+      <div class="quiz">
+        <p>A client says “we are on Odoo.sh, Community Edition.” What is wrong?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Odoo.sh hosts Enterprise. Community is Docker/VPS/on-prem. Ask which edition they actually run before quoting Studio or sh-only features.</p>
+      </div>
+      <div class="quiz">
+        <p>Why did your custom module not appear after you copied a folder into <code>addons/</code>?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Need the volume mount, a restart so the process sees files, developer mode, then Apps → Update Apps List. Then install.</p>
+      </div>
+      <div class="quiz">
+        <p>Name three things the official Docker compose example mounts or volumes.</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Filestore volume on <code>/var/lib/odoo</code>, config dir on <code>/etc/odoo</code>, extra addons on <code>/mnt/extra-addons</code>, plus a Postgres data volume.</p>
+      </div>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>http://localhost:8069 serves your <code>primer_learn</code> login without errors.</li>
+          <li>CRM, Sales, Inventory, Invoicing are installed.</li>
+          <li>Developer mode is on and you can open Settings → Technical.</li>
+          <li>You can explain master password vs admin user in one sentence.</li>
+          <li>A UI-map screenshot exists on disk, not only in your head.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <p><strong>Do not</strong> lead a proposal with Docker. Lead with the business flow from later modules. Keep this sitting as proof you can start work on day one:</p>
+      <ul>
+        <li>One screenshot: database manager (master password blurred) + one screenshot: Harborline company form.</li>
+        <li>Proposal line: “I run Odoo 18 Community locally on Docker (Postgres + extra-addons). I can work in your Odoo.sh if you are on Enterprise.”</li>
+        <li>Optional: a 60-second Loom of <code>docker compose up</code> through first login. Unlisted. Link only if the job is about hosting/setup.</li>
+      </ul>
+      <p>Next: <a href="02-crm-sales.html">Module 2 — CRM + Sales pipeline</a>.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 3 — Inventory + products — Odoo Primer</title>
+  <meta name="description" content="Storable products, warehouses, stock moves, receipts, deliveries, reordering rules in Odoo 18 Community.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="modules">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#why">Why Upwork</a>
+      <a href="#concepts">Stock vocabulary</a>
+      <a href="#lab">Lab</a>
+      <a href="#recall">Recall</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Module 03</p>
+      <h1>Inventory + products</h1>
+      <p class="lede">Sales without stock is a CRM. Wholesale and retail jobs are stock jobs. You will create three product types, receive goods, deliver the Northwind order (or a new one), and read a stock move like a grown-up.</p>
+      <div class="meta-row">
+        <span class="stamp rust">40 min</span>
+        <span class="stamp forest">Prereq: Modules 1–2</span>
+        <span class="stamp plum">Produces: on-hand qty + a move</span>
+      </div>
+
+      <h2 id="why">Why this shows up on Upwork</h2>
+      <p>A public wholesale distribution implementation post asked for Sales, Inventory, Purchase, Accounting, and a workflow that allocates sales orders from <em>on-hand</em> and <em>incoming linked to purchase orders</em>, including partial allocation. Catalog listings sell POS + Inventory + Sales with warehouses, lots, barcodes, and reordering rules. “Inventory / Stock” is named in ERP specialist posts next to CRM and Accounting.</p>
+      <p>Website/eCommerce jobs exist, but they still collapse into product records and stock. Learn Inventory first.</p>
+
+      <h2 id="concepts">Vocabulary you must not mix up</h2>
+      <table>
+        <thead><tr><th>Word</th><th>Meaning in Odoo</th></tr></thead>
+        <tbody>
+          <tr><td>Product type: Storable</td><td>Tracked in stock. Uses Inventory. (<code>product</code> / <code>consu</code> naming shifted across versions; in 18 the form says Goods vs Service, with “Track Inventory” making it storable.)</td></tr>
+          <tr><td>Consumable / Goods not tracked</td><td>You buy/sell it but Odoo does not keep qty. Packaging, sometimes office supplies.</td></tr>
+          <tr><td>Service</td><td>No stock. Invoicing policy still matters.</td></tr>
+          <tr><td>Warehouse</td><td>A physical site with a receiving and shipping policy (1-step, 2-step, 3-step).</td></tr>
+          <tr><td>Location</td><td>A node: WH/Stock, WH/Input, Partner locations, Virtual inventory loss, Vendors, Customers.</td></tr>
+          <tr><td>Quant</td><td>Quantity of a product in a location (optionally lot/serial/package).</td></tr>
+          <tr><td>Stock move</td><td>Intent to move qty from location A to B. The atomic object.</td></tr>
+          <tr><td>Picking / transfer</td><td>A document grouping moves (receipt, delivery, internal).</td></tr>
+          <tr><td>Reordering rule</td><td>Min/max that can spawn RFQs or manufacturing — here, RFQs via Purchase.</td></tr>
+        </tbody>
+      </table>
+      <p>Default warehouse is one-step: receipts go Vendor → WH/Stock; deliveries WH/Stock → Customer. Two-step receipts: Vendor → Input → Stock. Do not turn on three-step picking on day 1 “for realism.” You will lose the product in Input and think Odoo is broken.</p>
+      <h3>Routes, briefly</h3>
+      <p>Buy, Manufacture, Replenish on Order (MTO), Dropship. Harborline is a distributor: <strong>Buy</strong> on the product, vendor set, reordering rule later. MTO is a trap if the client also wants stock on hand — it ties each SO to a PO.</p>
+      <h3>Valuation (preview of Module 4)</h3>
+      <p>On-hand quantity is operations. Inventory <em>value</em> is accounting. Community Invoicing plus product cost is enough to talk about it. Automated valuation / Anglo-Saxon vs continental (and in 19, periodic vs perpetual) is where implementations go to die if nobody owns finance. You will not toggle automated valuation in this sitting unless you already understand the chart of accounts.</p>
+
+      <h2 id="lab">Lab</h2>
+      <h3>1. Three products (8 min)</h3>
+      <p>Inventory or Sales → Products → Products. Create (skip if you already created beans in Module 2):</p>
+      <ol>
+        <li><code>HB-BEAN-25</code> — Organic Black Beans 25kg — track inventory — $42 / cost $28 — can be sold and purchased — invoicing policy delivered quantities.</li>
+        <li><code>PK-BOX-12</code> — Corrugated shipper — do <strong>not</strong> track inventory (consumable) — purchase only if you want — expense-ish.</li>
+        <li><code>SVC-ONB</code> — Wholesale onboarding — service — $250 — invoice on ordered quantities.</li>
+      </ol>
+      <p>On the beans product, Inventory tab: Internal notes “25kg bag, pallet = 40.” If Purchase is installed, add vendor <strong>Andean Coffee Export</strong> or a lab vendor, price 28, delay 7 days.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m3-products"> Three products exist with types you can explain to a client in 20 seconds.</li>
+      </ul>
+
+      <h3>2. Warehouse tour (5 min)</h3>
+      <p>Inventory → Configuration → Warehouses. Open the default warehouse. Note incoming/outgoing operations (one step vs two). Then Configuration → Locations (enable Storage Locations in settings if the menu is hidden). Find WH/Stock, Partners/Customers, Partners/Vendors.</p>
+      <p>Inventory → Configuration → Settings: count Storage Locations, Multi-Step Routes, Storage Locations. For the lab, Storage Locations on, Multi-Step Routes on only if you want to see routes on the product. Leave packaging and barcodes off unless a job mentions them.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m3-wh"> You can name your warehouse’s receipt and delivery operations without opening the form.</li>
+      </ul>
+
+      <h3>3. Get stock in (10 min)</h3>
+      <p>Two legal ways:</p>
+      <p><strong>A. Inventory adjustment</strong> (fast): Inventory → Operations → Physical Inventory / Adjustments (wording varies). Count 100 bags of beans into WH/Stock. Validate. This is a stock move from inventory loss to stock. Fine for a demo; not how a live distributor starts (they receive against a PO).</p>
+      <p><strong>B. Purchase receipt</strong> (preferred story): Purchase → New PO to your vendor, 100 bags beans. Confirm. Receive products. Validate the receipt. Qty on hand becomes 100. Incoming shipments menu shows the history.</p>
+      <p>Open the product → On Hand smart button. You should see a quant: WH/Stock, 100. Then Inventory → Reporting → Moves (or Product Moves). Filter product beans. Read source location, destination, quantity, reference (the picking name).</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m3-receipt"> On-hand is 100 (or whatever you received). You opened the stock move, not only the product form.</li>
+      </ul>
+
+      <h3>4. Deliver the sales order (10 min)</h3>
+      <p>Re-open the Northwind sales order from Module 2, or make a new quotation for 20 bags and confirm. Delivery smart button → Open the picking. Reserved quantity should be 20 if stock exists. Validate. On-hand should drop to 80.</p>
+      <p>If nothing is reserved: check the product is storable, the warehouse on the SO matches, and you actually have quants. Forecasted quantity includes incoming; on-hand does not. Salespeople staring at “forecasted” and promising same-day delivery is a training issue you will get paid to fix.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m3-delivery"> Delivery validated. Product moves show WH/Stock → Customers. SO delivered qty is 20.</li>
+      </ul>
+
+      <h3>5. Reordering rule (7 min)</h3>
+      <p>On the beans product → Reordering Rules (or Inventory → Operations → Replenishment). Min 40, max 120, quantity multiple 20. Run the scheduler: Inventory → Operations → Run scheduler (developer / extra rights) or wait; on a lab you can also use Replenish on the product.</p>
+      <p>If Purchase is installed and a vendor is set, you should get an RFQ or at least a replenishment suggestion. Screenshot the rule and the RFQ. This is the “never stock out of beans” slide.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m3-rules"> A reordering rule exists on HB-BEAN-25 with min/max you chose on purpose, not defaults you did not read.</li>
+      </ul>
+
+      <div class="callout warn">
+        <h3>Lots and serials</h3>
+        <p>Food distributors (the wholesale job was food export) often need lots. Enable Lots &amp; Serial Numbers on the product tracking field, then you cannot validate a receipt without a lot. Save that for a second pass so today’s moves stay readable.</p>
+      </div>
+
+      <h2 id="recall">Recall prompts</h2>
+      <div class="quiz">
+        <p>Forecasted is 50, on-hand is 10. What might the 40 be?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Incoming receipts/POs (and/or manufacturing). Could also subtract outgoing confirmed SO. Read the forecast report rather than guessing.</p>
+      </div>
+      <div class="quiz">
+        <p>You validated a receipt but WH/Stock is still 0. Where is the qty?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Two-step receipt: goods sit in WH/Input (or Quality) until the internal transfer to Stock is done.</p>
+      </div>
+      <div class="quiz">
+        <p>Why did a service product not create a delivery on the SO?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Services are not storable. No stock move. You can still invoice them.</p>
+      </div>
+      <div class="quiz">
+        <p>Name the document vs the atomic object in Inventory.</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Picking/transfer is the document. Stock move is the atomic A→B quantity. Quants are the balances.</p>
+      </div>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>You have a storable product with on-hand ≠ 0 that you received, not only typed into a field.</li>
+          <li>A delivery against a sales order reduced on-hand.</li>
+          <li>You opened a stock move and can read source, dest, qty, reference.</li>
+          <li>You can explain 1-step vs 2-step without opening Settings.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <ul>
+        <li>Before/after: product on-hand 0 → receipt 100 → delivery 20 → on-hand 80.</li>
+        <li>One screenshot of the move list, not only the pretty kanban of receipts.</li>
+        <li>Proposal sentence: “I configure product types, warehouses (start with one-step), receipts against POs, deliveries from SOs, and min/max replenishment. Lots if the commodity needs them.”</li>
+        <li>Pack this into <a href="../exercises/01-wholesale-erp.html">Exercise 01</a> rather than as a lone “I know Inventory” tile.</li>
+      </ul>
+      <p>Next: <a href="04-accounting.html">Module 4 — Accounting for implementers</a>.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

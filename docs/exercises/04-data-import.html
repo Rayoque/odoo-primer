@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EX04 — Master data import — Odoo Primer</title>
+  <meta name="description" content="Import contacts and products into Odoo from CSV. Portfolio before/after for Upwork data import gigs.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="exercises">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#demand">Demand theme</a>
+      <a href="#brief">Brief</a>
+      <a href="#show">What to show on Upwork</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Exercise 04 · portfolio</p>
+      <h1>Contacts + products import</h1>
+      <div class="meta-row">
+        <span class="stamp rust">25–35 min</span>
+        <span class="stamp forest">Prereq: Module 1, empty-ish portfolio DB</span>
+        <span class="stamp plum">CSVs in setup/sample-data</span>
+      </div>
+
+      <h2 id="demand">Demand theme</h2>
+      <p>The Upwork post <em>Odoo freelancer needed: setup ERP, modules, API, data import. Send portfolio &amp; quote</em> listed “Data import (clients, products, etc.)” in scope next to module setup and API. Full ERP specialist posts also expect master data work. Import is not glamorous. It is how implementations actually start, and it is visible in a before/after screenshot.</p>
+
+      <h2 id="brief">Do this on <code>primer_portfolio</code></h2>
+      <p>Files:</p>
+      <ul>
+        <li><code>setup/sample-data/contacts.csv</code></li>
+        <li><code>setup/sample-data/products.csv</code></li>
+      </ul>
+      <p>Odoo import: list view → Favorites / cog → Import records (wording: <strong>Import</strong>). Map columns carefully.</p>
+      <h3>Contacts</h3>
+      <ul>
+        <li><code>is_company</code> 1/0</li>
+        <li><code>country_id</code> by name “United States” — use the search on the mapping if the ID field fights you</li>
+        <li><code>customer_rank</code> / <code>supplier_rank</code> so they show as customer vs vendor</li>
+        <li>Maya Chen is a person; after import, open her and set <strong>Company</strong> to Harborline if the CSV did not parent her (many first imports miss parent_id). Fixing that in the UI and screenshotting the fix is allowed — real projects do this.</li>
+      </ul>
+      <h3>Products</h3>
+      <ul>
+        <li>Type column: in 18 you may need to map to the current product type fields (<code>type</code> values historically <code>product</code>, <code>consu</code>, <code>service</code>). If the wizard complains, create one product by hand, export it, and match the header names. That export-first trick is the professional move; screenshot it.</li>
+        <li>Do not invent categories that do not exist; map to All / Saleable or create categories first.</li>
+      </ul>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="ex4-csv"> You opened both CSVs and know which columns will need remapping.</li>
+        <li><input type="checkbox" data-task="ex4-import"> Import test on 1 row, then the rest. No traceback left on the wizard.</li>
+        <li><input type="checkbox" data-task="ex4-pack"> Before: empty customers list. After: Harborline, Northwind, vendors. Product list with internal references HB-*.</li>
+      </ul>
+      <div class="callout warn">
+        <h3>Never import into production on the first try</h3>
+        <p>Duplicate the database (database manager) or use a throwaway DB. Imports create rows that chatter will not explain. This is also what you tell clients.</p>
+      </div>
+
+      <div class="done-when">
+        <h2>Done when</h2>
+        <ul>
+          <li>At least 3 companies and 3 products exist from CSV, not only from the UI.</li>
+          <li>You have an exported template from Odoo itself for next time.</li>
+          <li>You wrote down one mapping gotcha (type, country, category).</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <ul>
+        <li>Before/after screenshots, same filter, same window size.</li>
+        <li>The CSV (sanitized) in the portfolio folder.</li>
+        <li>Proposal: “I import contacts and products from CSV using Odoo’s import wizard, after an export of a sample row so field names match the version you run. I do this on a duplicate database first.”</li>
+        <li>Do not claim ETL/API middleware unless you built one. This exercise is the wizard. API is a later track (XML-RPC/JSON-2).</li>
+      </ul>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

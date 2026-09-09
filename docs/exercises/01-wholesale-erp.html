@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EX01 — Harborline wholesale ERP — Odoo Primer</title>
+  <meta name="description" content="Portfolio exercise: configure Odoo Sales, Inventory, Purchase, Invoicing for a fictional wholesale distributor.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="exercises">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#demand">Demand theme</a>
+      <a href="#brief">Brief</a>
+      <a href="#steps">Steps</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show on Upwork</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Exercise 01 · portfolio</p>
+      <h1>Harborline wholesale ERP</h1>
+      <div class="meta-row">
+        <span class="stamp rust">40–45 min</span>
+        <span class="stamp forest">Prereq: Modules 1–4</span>
+        <span class="stamp plum">Database: primer_portfolio</span>
+      </div>
+
+      <h2 id="demand">Demand theme (not a fake stat)</h2>
+      <p>Public Upwork job <em>Odoo Implementation for Wholesale Distribution (Inventory + Accounting + Custom Documents)</em> asked for Sales, Inventory, Purchase, Accounting/Invoicing, and a sales workflow that allocates from on-hand and incoming PO stock, plus invoices from orders/deliveries, vendor bills, payment status, and chart of accounts. Separate posts titled <em>Odoo freelancer needed: setup ERP, modules, API, data import</em> and <em>Odoo ERP Specialist</em> list the same module cluster (CRM, Sales, Inventory, Accounting) plus user setup. You are practicing that cluster, not claiming you worked for that client.</p>
+      <p class="cite">Sources linked from the <a href="../demand.html">demand notes</a>.</p>
+
+      <h2 id="brief">Company brief (lab fiction)</h2>
+      <p><strong>Harborline Wholesale</strong> exports dry goods from Oakland. One warehouse, one-step receipts and deliveries. Sells 25kg commodity bags. Buys from importers. Wants:</p>
+      <ul>
+        <li>Customers and vendors as companies, with one buyer contact each</li>
+        <li>Storable products with cost and list price, invoice on delivery</li>
+        <li>PO → receipt → on-hand → SO → delivery → invoice → payment</li>
+        <li>A reordering rule on the hero SKU</li>
+        <li>Payment terms Net 30 on customers</li>
+      </ul>
+      <p>Out of scope: lots, multi-warehouse, customs, Studio, website. Custom documents are Exercise 03.</p>
+
+      <h2 id="steps">Session checklist</h2>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="ex1-company"> Company renamed Harborline Wholesale. Currency USD. Apps: Sales, CRM (optional), Inventory, Purchase, Invoicing. Developer mode on.</li>
+        <li><input type="checkbox" data-task="ex1-master"> Partners: Northwind Grocers (customer), Andean Coffee Export or Lumen Packaging (vendor), Maya Chen as contact. Products: HB-BEAN-25, HB-RICE-20, SVC-ONB. Use <code>setup/sample-data/</code> CSVs or type them. Categories have income accounts.</li>
+        <li><input type="checkbox" data-task="ex1-flow"> PO 80 bags beans → receive. SO 20 bags to Northwind → deliver → invoice on delivered qty → register payment. Reordering rule min 40 max 120. Optional: second SO that is only partially deliverable to talk about allocation.</li>
+        <li><input type="checkbox" data-task="ex1-pack"> Folder <code>portfolio/harborline-erp/</code> with numbered PNGs and <code>README.md</code> (4-sentence story + what is lab).</li>
+      </ul>
+      <h3>Partial allocation talking point</h3>
+      <p>The wholesale job wanted allocation from on-hand <em>and</em> incoming. In standard Odoo, forecasted qty includes incoming POs; a confirmed SO reserves on-hand. Show: PO confirmed not yet received, SO confirmed, forecast vs on-hand. Do not fake a custom allocator in this sitting.</p>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>A stranger can follow PNG 01→08 and understand PO to paid invoice.</li>
+          <li>No “Azure Interior” demo names on the portfolio DB screenshots.</li>
+          <li>You can narrate forecasted vs on-hand in 30 seconds.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <h3>Artifact list</h3>
+      <ol>
+        <li><code>01-company-apps.png</code> — company form + installed apps</li>
+        <li><code>02-products.png</code> — beans with cost, list, track inventory</li>
+        <li><code>03-po-receipt.png</code> — PO and validated receipt</li>
+        <li><code>04-onhand.png</code> — quants</li>
+        <li><code>05-so-delivery.png</code> — SO + validated delivery</li>
+        <li><code>06-invoice-items.png</code> — posted invoice journal items</li>
+        <li><code>07-payment.png</code> — paid</li>
+        <li><code>08-reorder.png</code> — min/max rule</li>
+      </ol>
+      <h3>Loom script (3:30)</h3>
+      <pre><code>0:00 Harborline is a lab distributor I use to show a standard
+     wholesale path on Odoo 18 Community.
+0:20 Products: storable beans, invoice on delivery.
+0:45 Purchase order, receive into WH/Stock, on-hand 80.
+1:20 Sales order 20 bags, reserve, deliver, on-hand 60.
+2:00 Invoice from delivered qty, journal items, register payment.
+2:40 Reordering rule. Forecast vs on-hand when a PO is incoming.
+3:10 I do not use Studio here. Custom documents are a separate module.
+3:25 What I would need from you: localization, tax owner, SKU list.</code></pre>
+      <h3>Proposal snippet</h3>
+      <blockquote>I implement the Sales–Purchase–Inventory–Invoicing loop for distributors: product types, one-step warehouse first, receipts against POs, deliveries against SOs, invoices on delivered quantities, payments, min/max replenishment. I can walk a staging database the same way I do on this Harborline lab (demo data off).</blockquote>
+      <h3>Do not claim</h3>
+      <p>Multi-company, landed costs, customs, automated valuation, or that you “implemented BBG ERP” — that was someone else’s job post.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

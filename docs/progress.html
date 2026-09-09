@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Progress tracker — Odoo Primer</title>
+  <meta name="description" content="Single progress tracker for the Odoo primer: modules, exercises, spaced reviews.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-depth="0" data-page="progress">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#live">This browser</a>
+      <a href="#md">Markdown file</a>
+      <a href="#modules">Modules</a>
+      <a href="#ex">Exercises</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Single tracker</p>
+      <h1>Progress</h1>
+      <p class="lede">Checkboxes on module and exercise pages save in this browser (<code>localStorage</code>). Mirror completed items in <code>progress/TRACKER.md</code> so a new device does not wipe the streak.</p>
+
+      <div class="today" id="live">
+        <p class="num">LIVE</p>
+        <p data-progress-label>Counting…</p>
+        <div class="progress-bar"><span></span></div>
+        <p><strong>Next item:</strong> <span id="today-next">…</span></p>
+        <table>
+          <thead><tr><th>Group</th><th>Done</th></tr></thead>
+          <tbody id="progress-breakdown"></tbody>
+        </table>
+      </div>
+
+      <h2 id="md">Markdown tracker</h2>
+      <p>File: <a href="https://github.com/Rayoque/odoo-primer/blob/main/progress/TRACKER.md">progress/TRACKER.md</a> (after push) — also in the repo you cloned. Commit it when you finish a sitting.</p>
+
+      <h2 id="modules">Modules</h2>
+      <ul>
+        <li><a href="modules/01-setup.html">01 Setup &amp; navigation</a></li>
+        <li><a href="modules/02-crm-sales.html">02 CRM + Sales</a></li>
+        <li><a href="modules/03-inventory.html">03 Inventory</a></li>
+        <li><a href="modules/04-accounting.html">04 Accounting</a></li>
+        <li><a href="modules/05-custom-module.html">05 Custom module</a></li>
+      </ul>
+      <h2 id="ex">Exercises</h2>
+      <ul>
+        <li><a href="exercises/01-wholesale-erp.html">EX01 Harborline wholesale</a></li>
+        <li><a href="exercises/02-lead-to-cash.html">EX02 Lead-to-cash reel</a></li>
+        <li><a href="exercises/03-custom-delivery-module.html">EX03 Custom module pack</a></li>
+        <li><a href="exercises/04-data-import.html">EX04 Data import</a></li>
+      </ul>
+      <p>Reviews: <a href="review.html">spaced schedule</a>. Portfolio index: <a href="portfolio.html">what to show</a>.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/site.js"></script>
+</body>
+</html>

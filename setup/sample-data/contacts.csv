@@ -1,0 +1,7 @@
+name,is_company,street,city,country_id,email,phone,customer_rank,supplier_rank
+Harborline Wholesale,1,14 Dock Road,Oakland,United States,ops@harborline.example,+1-510-555-0140,1,0
+Northwind Grocers,1,88 Market Street,Seattle,United States,buyers@northwind.example,+1-206-555-0199,1,0
+Pacific Dry Goods,1,210 Pier Ave,Long Beach,United States,orders@pacificdry.example,+1-562-555-0172,1,0
+Lumen Packaging Co,1,4 Industrial Way,Fremont,United States,sales@lumenpack.example,+1-510-555-0112,0,1
+Andean Coffee Export,1,Cra 7 # 12-20,Bogotá,Colombia,export@andeancoffee.example,+57-1-555-0100,0,1
+Maya Chen,0,14 Dock Road,Oakland,United States,maya.chen@harborline.example,+1-510-555-0141,1,0

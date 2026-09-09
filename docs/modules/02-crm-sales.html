@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 2 — CRM + Sales pipeline — Odoo Primer</title>
+  <meta name="description" content="Odoo 18 lead to opportunity to quotation to sales order. Lab with done-when and Upwork packing.">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-depth="1" data-page="modules">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#why">Why Upwork</a>
+      <a href="#concepts">Pipeline objects</a>
+      <a href="#lab">Lab</a>
+      <a href="#gotchas">Gotchas</a>
+      <a href="#recall">Recall</a>
+      <a href="#done">Done when</a>
+      <a href="#show">What to show</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Module 02</p>
+      <h1>CRM + Sales pipeline</h1>
+      <p class="lede">Clients say “set up CRM and Sales.” They mean: a place for messy interest, a kanban of deals, a quotation that becomes an order without retyping the customer. You will run that path once, slowly, and name every object.</p>
+      <div class="meta-row">
+        <span class="stamp rust">40 min</span>
+        <span class="stamp forest">Prereq: Module 1</span>
+        <span class="stamp plum">Produces: one won deal with a SO</span>
+      </div>
+
+      <h2 id="why">Why this shows up on Upwork</h2>
+      <p>Implementation posts list CRM and Sales as core modules next to Inventory and Accounting. Catalog services sell “Sales pipelines: quotations, price lists, discount tiers, delivery order generation.” A wholesale distribution job on Upwork described sales orders that allocate from on-hand and incoming stock — that is Sales talking to Inventory, which you start here and finish in Module 3.</p>
+      <p>If you can only show a kanban full of demo cards named “Interest in your products,” you look like a trial user. If you can show <em>this</em> Harborline lead becoming a quotation with real product codes, you look like an implementer.</p>
+
+      <h2 id="concepts">Objects on the path</h2>
+      <div class="flow">
+        <span>Lead</span><i>→</i>
+        <span>Opportunity</span><i>→</i>
+        <span>Quotation</span><i>→</i>
+        <span>Sales order</span><i>→</i>
+        <span>Delivery</span><i>→</i>
+        <span>Invoice</span>
+      </div>
+      <table>
+        <thead><tr><th>Record</th><th>Model</th><th>Job</th></tr></thead>
+        <tbody>
+          <tr><td>Lead</td><td><code>crm.lead</code> with type lead</td><td>Unqualified inbound. Optional; off by default.</td></tr>
+          <tr><td>Opportunity</td><td>same model, type opportunity</td><td>Qualified deal on the pipeline kanban.</td></tr>
+          <tr><td>Quotation</td><td><code>sale.order</code> state draft / sent</td><td>Price proposal. Not revenue yet.</td></tr>
+          <tr><td>Sales order</td><td><code>sale.order</code> state sale</td><td>Confirmed. Can create deliveries and invoices.</td></tr>
+          <tr><td>Contact</td><td><code>res.partner</code></td><td>Customer. Companies and people. Do not duplicate blindly.</td></tr>
+        </tbody>
+      </table>
+      <p>Leads and opportunities are <strong>the same model</strong> with a type flag. That is why conversion feels like a rename plus a pipeline stage. Quotations and orders are <strong>the same model</strong> with a state. Confirming a quote does not copy it into a second document; it changes state and unlocks stock and invoicing.</p>
+      <h3>Settings that change the product</h3>
+      <ul>
+        <li>CRM → Configuration → Settings → <strong>Leads</strong>. If this is off, you only see Opportunities. Many “our CRM is confusing” tickets are this checkbox.</li>
+        <li>Sales teams and pipeline stages: CRM → Configuration → Sales Teams / Stages. Default stages (New, Qualified, Proposition, Won) are enough for the lab.</li>
+        <li>Sales → Settings → <strong>Quotation templates</strong> and <strong>Online signature</strong> / payment: useful later, skip today.</li>
+        <li>Invoicing policy on the product: <em>ordered quantities</em> vs <em>delivered quantities</em>. Wholesale jobs almost always want delivered quantities for physical goods.</li>
+      </ul>
+
+      <h2 id="lab">Lab — one Harborline deal</h2>
+      <p>Use <code>primer_learn</code>. If you already have a clean <code>primer_portfolio</code>, you may repeat the same clicks there after this sitting.</p>
+
+      <h3>1. Turn on Leads (3 min)</h3>
+      <p>CRM → Configuration → Settings → enable Leads → Save. You should see a <strong>Leads</strong> menu. If you skip this, the rest of the lab still works from an opportunity; you will just miss a question clients ask.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m2-leads"> Leads menu exists. You created lead <strong>Northwind — Q4 beans trial</strong> with expected revenue 1,200, partner name Maya Chen, company Northwind Grocers, notes: “wants 20 bags organic black beans, net 30, Oakland dock.”</li>
+      </ul>
+
+      <h3>2. Qualify (5 min)</h3>
+      <p>Open the lead. Click <strong>Convert to Opportunity</strong>. Create the customer if it does not exist (company Northwind Grocers, person Maya Chen linked to it). Set the sales team. After conversion, find it on <strong>CRM → Pipeline</strong>.</p>
+      <p>Drag the card: New → Qualified. Schedule an activity: Call, due tomorrow, “confirm pallet count.” Activities are what managers mean by “make salespeople use the CRM.”</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m2-pipe"> Opportunity on the kanban with an activity. Chatter shows the conversion.</li>
+      </ul>
+
+      <h3>3. Quotation from the opportunity (10 min)</h3>
+      <p>On the opportunity, <strong>New Quotation</strong>. Confirm the customer is Northwind, not a duplicate individual. Add a line:</p>
+      <ul>
+        <li>If demo data is on, pick a storable product you will also use in Inventory. If not, create product <code>HB-BEAN-25</code> Organic Black Beans 25kg, type Storable, sales price 42, cost 28, invoicing policy <strong>Delivered quantities</strong>.</li>
+        <li>Quantity 20.</li>
+      </ul>
+      <p>Set payment terms if the localization loaded any (30 days). Optional: Sales → Products → Pricelists — skip unless you have time; mention them in the recall.</p>
+      <p>Send the quotation (or “Preview”). State becomes <em>Quotation Sent</em> if you mark it sent. Note the smart buttons on the opportunity: Quotations = 1.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m2-quote"> Quotation SO00xx linked from the opportunity, 20 × beans, customer is the company.</li>
+      </ul>
+
+      <h3>4. Confirm the order (5 min)</h3>
+      <p>Confirm. The banner should read Sales Order. A <strong>Delivery</strong> smart button appears if the product is storable and Inventory is installed. Do not validate the delivery yet if you have zero stock — Module 3 is the stock sitting. For this module, confirming is enough. If you already have on-hand qty from demo data, you may peek at the delivery form and leave it.</p>
+      <p>Mark the opportunity <strong>Won</strong>. The CRM and the order are now two views of the same win. That linkage is the whole point of using Odoo instead of a spreadsheet plus a separate quote tool.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m2-so"> Order state is Sales Order. Opportunity is Won. You can jump opportunity → quotation → order without search.</li>
+      </ul>
+
+      <h3>5. Optional in this sitting: invoice (5 min)</h3>
+      <p>If the product invoicing policy is ordered quantities, <strong>Create Invoice</strong> works immediately. If it is delivered quantities, Odoo will refuse until you deliver — which is correct, and a sentence you should use on calls. Either create a service line to invoice now, or stop and wait for Module 3.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m2-inv"> You either posted an invoice, or you wrote in your notes: “beans are invoice-on-delivery; blocked until stock move is done.” Both count.</li>
+      </ul>
+
+      <h2 id="gotchas">Gotchas implementers hit in week one</h2>
+      <div class="callout danger">
+        <h3>Duplicate partners</h3>
+        <p>Converting a lead with a free-typed name creates a new <code>res.partner</code>. Sales then cannot see history. Always search the customer field; merge duplicates under Contacts if you already made a mess.</p>
+      </div>
+      <div class="callout warn">
+        <h3>Sales vs CRM menus</h3>
+        <p>Quotations live in Sales. Pipeline lives in CRM. Clients will say “the quote is in CRM.” Train them with the smart buttons, not with a lecture.</p>
+      </div>
+      <p>Other landmines: confirming with a 0-price line; using a consumable when they needed stock; pricelists in USD while the company currency is something else; salespeople in the wrong sales team so the pipeline looks empty (filter “My Pipeline”).</p>
+
+      <h2 id="recall">Recall prompts</h2>
+      <div class="quiz">
+        <p>What Python model is a lead? An opportunity? A quotation?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Lead and opportunity: <code>crm.lead</code>. Quotation and sales order: <code>sale.order</code>. State/type flags, not separate tables.</p>
+      </div>
+      <div class="quiz">
+        <p>A user says they have no Leads menu. First check?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">CRM Settings → Leads checkbox. Then their access rights (Sales / User vs Administrator).</p>
+      </div>
+      <div class="quiz">
+        <p>Why might Create Invoice be disabled on a confirmed order of storable products?</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Product invoicing policy is delivered quantities and the delivery is not validated (or not fully delivered).</p>
+      </div>
+      <div class="quiz">
+        <p>Name the six-step flow you would draw on a sales call.</p>
+        <button type="button">Reveal</button>
+        <p class="answer">Lead → Opportunity → Quotation → Sales order → Delivery → Invoice (then payment in Module 4).</p>
+      </div>
+
+      <div class="done-when" id="done">
+        <h2>Done when</h2>
+        <ul>
+          <li>You can point at one Harborline (or Northwind) deal and hop lead → opportunity → quotation → order.</li>
+          <li>You know whether Leads are enabled and why.</li>
+          <li>You can say in one sentence when Odoo will not invoice a physical product.</li>
+          <li>Screenshots: pipeline kanban with the card, quotation form with lines, confirmed SO header.</li>
+        </ul>
+      </div>
+
+      <h2 id="show">What to show on Upwork</h2>
+      <p>This sitting feeds <a href="../exercises/02-lead-to-cash.html">Exercise 02</a>. Minimum pack:</p>
+      <ul>
+        <li>Strip of 4 screenshots, numbered, no demo-data company names if you used <code>primer_portfolio</code>.</li>
+        <li>Profile line: “CRM + Sales: leads, pipeline stages, quotation templates later, quote-to-order with invoicing policy explained to the client.”</li>
+        <li>Do not claim “CRM automation” or “AI lead scoring” unless you actually configured them.</li>
+      </ul>
+      <p>Next: <a href="03-inventory.html">Module 3 — Inventory + products</a>. Same order, now with stock.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../js/site.js"></script>
+</body>
+</html>

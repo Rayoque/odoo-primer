@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Setup guide — Odoo Primer</title>
+  <meta name="description" content="Lightest reliable Odoo Community lab: Docker Compose, PostgreSQL, extra addons, Odoo.sh notes.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-depth="0" data-page="setup">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="site-header"></header>
+  <div class="wrap">
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#why">Why Docker</a>
+      <a href="#prereq">Prerequisites</a>
+      <a href="#up">Bring it up</a>
+      <a href="#db">Databases</a>
+      <a href="#sh">Odoo.sh</a>
+      <a href="#troubleshoot">Breakage</a>
+    </aside>
+    <main id="main">
+      <p class="kicker">Lab environment</p>
+      <h1>Setup guide — Docker Community</h1>
+      <p class="lede">The lightest reliable stack for this primer is the official <code>odoo:18.0</code> image plus PostgreSQL 15. Files live in <code>setup/</code>. You do not need Odoo.sh, a VPS, or a paid app.</p>
+      <div class="meta-row">
+        <span class="stamp rust">Free</span>
+        <span class="stamp forest">Official images</span>
+        <span class="stamp plum">Named volumes</span>
+      </div>
+
+      <h2 id="why">Why this stack</h2>
+      <p>The <a href="https://hub.docker.com/_/odoo">official Odoo Docker documentation</a> is explicit: the image needs a PostgreSQL server; extra addons mount at <code>/mnt/extra-addons</code>; filestore belongs in a named volume at <code>/var/lib/odoo</code>. That is the whole architecture.</p>
+      <table>
+        <thead><tr><th>Option</th><th>Use it when</th><th>Skip when</th></tr></thead>
+        <tbody>
+          <tr><td>Docker Compose (this repo)</td><td>Learning, Community clients, custom addons</td><td>You cannot install Docker at all</td></tr>
+          <tr><td>Odoo Online (odoo.com trial)</td><td>You only need to click standard apps for a day</td><td>You need extra-addons or a portfolio module</td></tr>
+          <tr><td>Odoo.sh</td><td>Paid Enterprise client already on sh</td><td>Community, or you do not want a subscription</td></tr>
+          <tr><td>Source install + venv</td><td>You are debugging core and want pdb</td><td>Day 1 of this primer</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="prereq">Prerequisites</h2>
+      <ul class="checklist">
+        <li><input type="checkbox" data-task="m1-docker"> Docker Engine or Docker Desktop, with <code>docker compose</code> available</li>
+        <li><input type="checkbox"> 4 GB RAM free (8 GB is more comfortable)</li>
+        <li><input type="checkbox"> Ports 8069 free</li>
+        <li><input type="checkbox"> This repository cloned locally</li>
+      </ul>
+      <p>Check:</p>
+<pre><code>docker --version
+docker compose version
+</code></pre>
+
+      <h2 id="up">Bring it up</h2>
+<pre><code>cd setup
+docker compose up -d
+docker compose logs -f web
+</code></pre>
+      <p>When the log shows the HTTP server, open <a href="http://localhost:8069">http://localhost:8069</a>. You should see the database manager, not a Python traceback.</p>
+      <p>Compose highlights (mirrors the official example: web + db, extra addons, config directory, named volumes):</p>
+<pre><code>services:
+  web:
+    image: odoo:18.0
+    ports: ["8069:8069"]
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+</code></pre>
+      <p>Master password is <code>admin_passwd</code> in <code>setup/config/odoo.conf</code>, default <code>primer-master-change-me</code>. That password is for <em>creating and deleting databases</em>, not for logging in as a user.</p>
+
+      <h2 id="db">Create databases the primer way</h2>
+      <ol class="lab">
+        <li>Master password: from <code>odoo.conf</code>.</li>
+        <li>Database name: <code>primer_learn</code>.</li>
+        <li>Email / login: your email. Password: pick one and store it in your password manager, not in git.</li>
+        <li>Language: English. Country: United States (Harborline labs) unless you are practicing a specific localization.</li>
+        <li>Demo data: <strong>checked</strong> for learn, <strong>unchecked</strong> for <code>primer_portfolio</code>.</li>
+      </ol>
+      <div class="callout warn">
+        <h3>Filestore and database are a pair</h3>
+        <p>Attachments and product images live in <code>/var/lib/odoo/filestore/&lt;dbname&gt;</code>. A SQL dump without the filestore is a half backup. A volume wipe (<code>docker compose down -v</code>) deletes both.</p>
+      </div>
+
+      <h2 id="sh">Odoo.sh — what to say, what not to run</h2>
+      <p>Odoo.sh is git-push hosting with per-branch staging. It is sold with <strong>Odoo Enterprise</strong>. Community Edition is not hosted there. You still need the vocabulary for Upwork:</p>
+      <ul>
+        <li>Production, staging, and development databases mapped to git branches</li>
+        <li>Custom modules as the git repo (or submodules), not copied into core</li>
+        <li>Builds on push; logs and shells in the dashboard</li>
+      </ul>
+      <p>For this program you never pay for sh. If a job is “we are on Odoo.sh,” you work in their project after they invite you.</p>
+
+      <h2 id="troubleshoot">When it breaks</h2>
+      <table>
+        <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Port already allocated</td><td>Another Odoo or a leftover container</td><td><code>docker ps</code> and stop it, or change the left-hand port to <code>8070:8069</code></td></tr>
+          <tr><td>Database connection error</td><td>db container not ready, or USER/PASSWORD mismatch</td><td>Match compose env to <code>POSTGRES_*</code>; restart web</td></tr>
+          <tr><td>Custom module missing</td><td>Not mounted, or Apps list not updated</td><td>Confirm <code>/mnt/extra-addons</code>, restart, developer mode → Update Apps List</td></tr>
+          <tr><td>White page after restore</td><td>Filestore missing or version skew</td><td>Restore volume + DB from the same Odoo 18</td></tr>
+          <tr><td>PDF reports fail</td><td>wkhtmltopdf quirks in some images</td><td>Use HTML preview for the lab; do not debug wkhtml on day 1</td></tr>
+        </tbody>
+      </table>
+      <p>Full command list: <a href="https://github.com/Rayoque/odoo-primer/blob/main/setup/README.md">setup/README.md</a> (after you push) or the copy in this repo.</p>
+    </main>
+  </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/site.js"></script>
+</body>
+</html>
